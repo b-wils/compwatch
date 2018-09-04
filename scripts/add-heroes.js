@@ -12,7 +12,8 @@ firebase.initializeApp({
 });
 
 var db = firebase.firestore();
-
+const settings = {/* your settings... */ timestampsInSnapshots: true};
+db.settings(settings);
 
 heroes.forEach((hero) => {
 	var docRef = db.collection('heroes').doc(hero.name);
