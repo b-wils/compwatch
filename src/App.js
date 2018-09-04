@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import firebase from './firebase.js'; // <--- add this line
 
 class App extends Component {
   render() {
@@ -15,6 +16,15 @@ class App extends Component {
         </p>
       </div>
     );
+  }
+
+  componentDidMount() {
+    firebase.firestore().collection('heroes').get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(`${doc.id} => ${doc.data()}`);
+            })
+        });
+
   }
 }
 
