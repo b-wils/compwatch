@@ -16,6 +16,6 @@ var db = firebase.firestore();
 
 heroes.forEach((hero) => {
 	var docRef = db.collection('heroes').doc(hero.name);
-	var setHero = docRef.set({hero});
+	var setHero = docRef.set(hero);
 })
 
