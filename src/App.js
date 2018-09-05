@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+
 import logo from './logo.svg';
 import './App.css';
-import firebase from './firebase.js'; // <--- add this line
 
 class App extends Component {
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  }
+
   constructor(props) {
     super(props);
     this.state = {heroes: []}
@@ -18,16 +24,18 @@ class App extends Component {
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload. My edits! IS this gonig???
         </p>
-        {this.state.heroes.map((item,i) => <span key={item.name}><img src={getImageFromHero(item)}/></span>)}
+        {this.props.heroes ? 
+          this.props.heroes.map((item,i) => <span key={item.name}><img src={getImageFromHero(item)}/></span>) :
+          <span> Loading Heroes </span>
+        }
       </div>
     );
 
   }
 
   componentDidMount() {
-    firebase.firestore().collection('heroes').get().then((querySnapshot) => {
-            this.setState({heroes: querySnapshot.docs.map((doc) => doc.data()) })
-        });
+    const { firestore } = this.context.store
+    firestore.get('heroes')
   }
 }
 
@@ -35,4 +43,9 @@ function getImageFromHero(hero) {
   return "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
 }
 
-export default App;
+const mapStateToProps = (state, ownProps = {}) => {
+  // console.log(state.firestore.data)
+  return {heroes: state.firestore.ordered.heroes};
+}
+
+export default connect(mapStateToProps)(App)
