@@ -15,7 +15,21 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {heroes: []}
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
+
+  handleInputChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+
+
+  }
+
   render() {
     return (
       <div className="App">
@@ -23,13 +37,19 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload. My edits! IS this gonig???
-        </p>
+        <div>
         {this.props.heroes ? 
           this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} />) :
           <span> Loading Heroes </span>
         }
+        </div>
+
+        <div>
+        {this.props.maps ? 
+          this.props.maps.map((item,i) => <MapPickerItem key={item.name} map={item} onChange={this.handleInputChange} checked={this.state[item.name]  ? true : false}/>) :
+          <span> Loading Maps </span>
+        }
+        </div>
         {!isEmpty(this.props.auth) ?
          <div> Logged in! <button onClick={() => this.props.firebase.logout()}> logout </button></div> :
          <button  onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
@@ -40,8 +60,9 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { firestore } = this.context.store
-    firestore.get('heroes')
+    const { firestore } = this.context.store;
+    firestore.get('heroes');
+    firestore.get('maps');
   }
 }
 
@@ -55,10 +76,39 @@ function getImageFromHero(hero) {
   return "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
 }
 
+const MapPickerItem = ({map, onChange, checked}) => {
+    var labelStyle = {
+
+      "backgroundImage": `url(${getImageFromMap(map)})`,
+      height: "100px",
+      width: "112px",
+      display:"inline-block",
+      padding: "0 0 0 0px" 
+  }
+
+  if (checked) {
+    labelStyle['borderColor'] = "red";
+    labelStyle['borderStyle'] = "solid";
+  }
+
+  return (
+      <span>
+        <input type="checkbox" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
+        <label htmlFor={map.name} style={labelStyle}></label>
+      </span>
+    );
+}
+
+
+function getImageFromMap(map) {
+  return "/images/maps/" + map.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + "_link.png";
+}
+
 const mapStateToProps = (state, ownProps = {}) => {
   return {
     heroes: state.firestore.ordered.heroes,
-    auth: state.firebase.auth
+    auth: state.firebase.auth,
+    maps: state.firestore.ordered.maps
   };
 }
 
