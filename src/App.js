@@ -56,7 +56,6 @@ function getImageFromHero(hero) {
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
-  // console.log(state.firestore.data)
   return {
     heroes: state.firestore.ordered.heroes,
     auth: state.firebase.auth
