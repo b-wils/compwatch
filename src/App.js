@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types'
+import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 
 import logo from './logo.svg';
 import './App.css';
@@ -25,9 +27,13 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload. My edits! IS this gonig???
         </p>
         {this.props.heroes ? 
-          this.props.heroes.map((item,i) => <span key={item.name}><img src={getImageFromHero(item)}/></span>) :
+          this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} />) :
           <span> Loading Heroes </span>
         }
+        {!isEmpty(this.props.auth) ?
+         <div> Logged in! <button onClick={() => this.props.firebase.logout()}> logout </button></div> :
+         <button  onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
+           Login With Google</button> }
       </div>
     );
 
@@ -39,13 +45,32 @@ class App extends Component {
   }
 }
 
+const HeroPickerItem = ({hero}) => {
+  return (
+      <span key={hero.name}><img src={getImageFromHero(hero)}/></span>
+    );
+}
+
 function getImageFromHero(hero) {
   return "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
   // console.log(state.firestore.data)
-  return {heroes: state.firestore.ordered.heroes};
+  return {
+    heroes: state.firestore.ordered.heroes,
+    auth: state.firebase.auth
+  };
 }
 
-export default connect(mapStateToProps)(App)
+App.propTypes = {
+  firebase: PropTypes.shape({
+    login: PropTypes.func.isRequired
+  }),
+  auth: PropTypes.object
+}
+
+export default compose(
+  firebaseConnect(),
+  connect(mapStateToProps)
+)(App)
