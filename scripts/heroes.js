@@ -20,7 +20,7 @@ module.exports =  heroes = [
 	"role": "Support"
 },
 {
-	"name": "Brigette",
+	"name": "Brigitte",
 	"role": "Support"
 },
 {
@@ -88,7 +88,7 @@ module.exports =  heroes = [
 	"role": "Damage"
 },
 {
-	"name": "Solider: 76",
+	"name": "Soldier: 76",
 	"role": "Damage"
 },
 {
