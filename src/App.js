@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
+import { withFirebase } from 'react-redux-firebase'
 
 import logo from './logo.svg';
 import './App.css';
@@ -22,6 +23,7 @@ class App extends Component {
     this.heroSelectChange = this.heroSelectChange.bind(this);
     this.mapSelectChange = this.mapSelectChange.bind(this);
     this.newSRChange = this.newSRChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   newSRChange(event) {
@@ -57,6 +59,27 @@ class App extends Component {
 
   }
 
+
+  handleSubmit(event) {
+
+    event.preventDefault();
+
+    var firestore = this.context.store.firestore
+    var {selectedHeroes, selectedMap, newSR} = this.state;
+
+    var newGame = {
+      heroes: Object.keys(selectedHeroes).filter((key) => {return selectedHeroes[key] !== false;  }),
+      map: selectedMap,
+      newSR: parseInt(newSR, 10),
+      userId: this.props.auth.uid,
+      firebaseTime: firestore.FieldValue.serverTimestamp(),
+      localTime: new Date()
+    }
+
+    firestore.add('games', newGame)
+
+  }
+
   render() {
     return (
       <div className="App">
@@ -64,26 +87,28 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
-        <div>
-          New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
-        </div>
-        <div>
-        {this.props.heroes ? 
-          this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
-          <span> Loading Heroes </span>
-        }
-        </div>
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
+          </div>
+          <div>
+          {this.props.heroes ? 
+            this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
+            <span> Loading Heroes </span>
+          }
+          </div>
 
-        <div>
-        {this.props.maps ? 
-          this.props.maps.map((item,i) => <MapPickerItem key={item.name} map={item} onChange={this.mapSelectChange} checked={this.state.selectedMap === item.name  ? true : false}/>) :
-          <span> Loading Maps </span>
-        }
-        </div>
-        {!isEmpty(this.props.auth) ?
-         <div> Logged in! <button onClick={() => this.props.firebase.logout()}> logout </button></div> :
-         <button  onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
-           Login With Google</button> }
+          <div>
+          {this.props.maps ? 
+            this.props.maps.map((item,i) => <MapPickerItem key={item.name} map={item} onChange={this.mapSelectChange} checked={this.state.selectedMap === item.name  ? true : false}/>) :
+            <span> Loading Maps </span>
+          }
+          </div>
+          {!isEmpty(this.props.auth) ?
+           <div> Logged in! <input type="submit" value="Submit" /><button onClick={() => this.props.firebase.logout()}> logout </button></div> :
+           <button  onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
+             Login With Google</button> }
+        </form>
       </div>
     );
 
@@ -98,7 +123,6 @@ class App extends Component {
 
 const HeroPickerItem = ({hero, onChange, checked}) => {
     var labelStyle = {
-      // "backgroundImage": `url(${getImageFromHero(hero)})`,
       height: "100px",
       width: "112px",
       display:"inline-block",
@@ -127,8 +151,6 @@ function getImageFromHero(hero) {
 
 const MapPickerItem = ({map, onChange, checked}) => {
     var labelStyle = {
-
-      // "backgroundImage": `url(${getImageFromMap(map)})`,
       height: "100px",
       width: "112px",
       display:"inline-block",
