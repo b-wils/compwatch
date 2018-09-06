@@ -98,7 +98,7 @@ class App extends Component {
 
 const HeroPickerItem = ({hero, onChange, checked}) => {
     var labelStyle = {
-      "backgroundImage": `url(${getImageFromHero(hero)})`,
+      // "backgroundImage": `url(${getImageFromHero(hero)})`,
       height: "100px",
       width: "112px",
       display:"inline-block",
@@ -115,7 +115,7 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
   return (
       <span>
         <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={hero.name} style={labelStyle}> </label>
+        <label htmlFor={hero.name} style={labelStyle}> <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name}/></label>
       </span>
     );
 }
@@ -128,7 +128,7 @@ function getImageFromHero(hero) {
 const MapPickerItem = ({map, onChange, checked}) => {
     var labelStyle = {
 
-      "backgroundImage": `url(${getImageFromMap(map)})`,
+      // "backgroundImage": `url(${getImageFromMap(map)})`,
       height: "100px",
       width: "112px",
       display:"inline-block",
@@ -144,9 +144,10 @@ const MapPickerItem = ({map, onChange, checked}) => {
   return (
       <span>
         <input type="radio" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={map.name} style={labelStyle}></label>
+        <label htmlFor={map.name} style={labelStyle}><img src={getImageFromMap(map)} alt={map.name} title={map.name}/></label>
       </span>
     );
+
 }
 
 

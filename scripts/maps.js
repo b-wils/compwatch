@@ -55,10 +55,10 @@ module.exports =  heroes = [
 	"name": "Numbani",
 	"type": "Hybrid"
 },
-{
-	"name": "Busan",
-	"type": "Control"
-},
+// {
+// 	"name": "Busan",
+// 	"type": "Control"
+// },
 {
 	"name": "Ilios",
 	"type": "Control"
