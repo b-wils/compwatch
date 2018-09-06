@@ -39,7 +39,7 @@ class App extends Component {
         </header>
         <div>
         {this.props.heroes ? 
-          this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} />) :
+          this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.handleInputChange} checked={this.state[item.name]  ? true : false}/>) :
           <span> Loading Heroes </span>
         }
         </div>
@@ -66,11 +66,30 @@ class App extends Component {
   }
 }
 
-const HeroPickerItem = ({hero}) => {
+const HeroPickerItem = ({hero, onChange, checked}) => {
+    var labelStyle = {
+      "backgroundImage": `url(${getImageFromHero(hero)})`,
+      height: "100px",
+      width: "112px",
+      display:"inline-block",
+      padding: "0 0 0 0px",
+      borderStyle: 'solid',
+      borderColor: 'white'
+  }
+
+  if (checked) {
+    labelStyle['borderColor'] = "red";
+    labelStyle['borderStyle'] = "solid";
+  }
+
   return (
-      <span key={hero.name}><img src={getImageFromHero(hero)}/></span>
+      <span>
+        <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
+        <label htmlFor={hero.name} style={labelStyle}></label>
+      </span>
     );
 }
+
 
 function getImageFromHero(hero) {
   return "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
@@ -83,12 +102,13 @@ const MapPickerItem = ({map, onChange, checked}) => {
       height: "100px",
       width: "112px",
       display:"inline-block",
-      padding: "0 0 0 0px" 
+      padding: "0 0 0 0px" ,
+      borderStyle: 'solid',
+      borderColor: 'white'
   }
 
   if (checked) {
     labelStyle['borderColor'] = "red";
-    labelStyle['borderStyle'] = "solid";
   }
 
   return (
