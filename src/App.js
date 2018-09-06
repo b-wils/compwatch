@@ -15,11 +15,20 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      newSR: "",
       selectedHeroes: {},
       selectedMap: null
     }
     this.heroSelectChange = this.heroSelectChange.bind(this);
     this.mapSelectChange = this.mapSelectChange.bind(this);
+    this.newSRChange = this.newSRChange.bind(this);
+  }
+
+  newSRChange(event) {
+    var newSR = event.target.value;
+    this.setState({
+      newSR: newSR
+    })
   }
 
   heroSelectChange(event) {
@@ -55,6 +64,9 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
+        <div>
+          New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
+        </div>
         <div>
         {this.props.heroes ? 
           this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
@@ -103,7 +115,7 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
   return (
       <span>
         <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={hero.name} style={labelStyle}></label>
+        <label htmlFor={hero.name} style={labelStyle}> </label>
       </span>
     );
 }
