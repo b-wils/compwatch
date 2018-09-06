@@ -14,19 +14,37 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {heroes: []}
-    this.handleInputChange = this.handleInputChange.bind(this);
+    this.state = {
+      selectedHeroes: {},
+      selectedMap: null
+    }
+    this.heroSelectChange = this.heroSelectChange.bind(this);
+    this.mapSelectChange = this.mapSelectChange.bind(this);
   }
 
-  handleInputChange(event) {
+  heroSelectChange(event) {
+    const target = event.target;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
+    const name = target.name;
+
+    var newSelectedHeroes = this.state.selectedHeroes;
+
+    newSelectedHeroes[name] = value
+
+    this.setState({
+      selectedHeroes: newSelectedHeroes
+    });
+
+  }
+
+  mapSelectChange(event) {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
-      [name]: value
+      selectedMap: name
     });
-
 
   }
 
@@ -39,14 +57,14 @@ class App extends Component {
         </header>
         <div>
         {this.props.heroes ? 
-          this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.handleInputChange} checked={this.state[item.name]  ? true : false}/>) :
+          this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
           <span> Loading Heroes </span>
         }
         </div>
 
         <div>
         {this.props.maps ? 
-          this.props.maps.map((item,i) => <MapPickerItem key={item.name} map={item} onChange={this.handleInputChange} checked={this.state[item.name]  ? true : false}/>) :
+          this.props.maps.map((item,i) => <MapPickerItem key={item.name} map={item} onChange={this.mapSelectChange} checked={this.state.selectedMap === item.name  ? true : false}/>) :
           <span> Loading Maps </span>
         }
         </div>
@@ -113,7 +131,7 @@ const MapPickerItem = ({map, onChange, checked}) => {
 
   return (
       <span>
-        <input type="checkbox" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
+        <input type="radio" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
         <label htmlFor={map.name} style={labelStyle}></label>
       </span>
     );
