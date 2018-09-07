@@ -18,7 +18,8 @@ class App extends Component {
     this.state = {
       newSR: "",
       selectedHeroes: {},
-      selectedMap: null
+      selectedMap: null,
+      message: ""
     }
     this.heroSelectChange = this.heroSelectChange.bind(this);
     this.mapSelectChange = this.mapSelectChange.bind(this);
@@ -29,7 +30,8 @@ class App extends Component {
   newSRChange(event) {
     var newSR = event.target.value;
     this.setState({
-      newSR: newSR
+      newSR: newSR,
+      message: ""
     })
   }
 
@@ -43,7 +45,8 @@ class App extends Component {
     newSelectedHeroes[name] = value
 
     this.setState({
-      selectedHeroes: newSelectedHeroes
+      selectedHeroes: newSelectedHeroes,
+      message: ""
     });
 
   }
@@ -54,7 +57,8 @@ class App extends Component {
     const name = target.name;
 
     this.setState({
-      selectedMap: name
+      selectedMap: name,
+      message: ""
     });
 
   }
@@ -78,6 +82,13 @@ class App extends Component {
 
     firestore.add('games', newGame)
 
+    this.setState({
+      newSR: "",
+      selectedHeroes: {},
+      selectedMap: null,
+      message: "Game submitted"
+    })
+
   }
 
   render() {
@@ -87,6 +98,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>
         </header>
+        {this.state.message ? <div> {this.state.message}</div> : null}
         <form onSubmit={this.handleSubmit}>
           <div>
             New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
