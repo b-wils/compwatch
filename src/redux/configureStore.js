@@ -8,21 +8,29 @@ import 'firebase/firestore'
 // import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
+// TODO need a more elegant way to load config from a file
+var config;
+switch (process.env.NODE_ENV) {
+	case 'production':
+		config = require('../config/prod')
+		break;
+	case 'development':
+		config = require('../config/dev')
+		break;
+	case 'test':
+		config = require('../config/test')
+		break;
+	default:
+		console.log('warning could not determine environment, using dev firebase config')
+		config = require('../config/dev')
+		break;
+}
+
+var firebaseConfig = config.firebaseConfig;
+
 export default function configureStore(initialState) {
 
-	// TODO should move this into a config variable
-	// This is not sensitive info though since it is exposed to client and needed to access
-
-	const firebaseConfig = {
-	    apiKey: "AIzaSyAZCtWUw4dwor276ope1wQwfmwwLJ2Ew6U",
-	    authDomain: "compwatch-207022.firebaseapp.com",
-	    databaseURL: "https://compwatch-207022.firebaseio.com",
-	    projectId: "compwatch-207022",
-	    storageBucket: "compwatch-207022.appspot.com",
-	    messagingSenderId: "738339340418"
-	  };
-
-	const rfConfig = {} // optional redux-firestore Config Options
+	// const rfConfig = {} // optional redux-firestore Config Options
 
 	const rrfConfig = {
 		userProfile: 'users', // firebase root where user profiles are stored

@@ -24,3 +24,7 @@ yarn-error.log*
 .env
 /scripts/.env
 /scripts/config/*
+
+/src/config/*
+!/src/config/prod.js
+!/src/config/dev.sample.js

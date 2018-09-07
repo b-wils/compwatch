@@ -117,10 +117,14 @@ class App extends Component {
           }
           </div>
           {!isEmpty(this.props.auth) ?
-           <div> Logged in! <input type="submit" value="Submit" /><button onClick={() => this.props.firebase.logout()}> logout </button></div> :
+           <div><input type="submit" value="Submit" /></div> :
+            null }
+        </form>
+
+          {!isEmpty(this.props.auth) ?
+           <button onClick={() => this.props.firebase.logout()}> logout </button> :
            <button  onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
              Login With Google</button> }
-        </form>
       </div>
     );
 
