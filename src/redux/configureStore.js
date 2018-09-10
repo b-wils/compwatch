@@ -8,28 +8,16 @@ import 'firebase/firestore'
 // import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 
-// TODO need a more elegant way to load config from a file
-var config;
-switch (process.env.NODE_ENV) {
-	case 'production':
-		config = require('../config/prod')
-		break;
-	case 'development':
-		config = require('../config/dev')
-		break;
-	case 'test':
-		config = require('../config/test')
-		break;
-	default:
-		console.log('warning could not determine environment, using dev firebase config')
-		config = require('../config/dev')
-		break;
-}
-
-var firebaseConfig = config.firebaseConfig;
-
 export default function configureStore(initialState) {
 
+	var	firebaseConfig = {
+	    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+	    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+	    databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+	    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+	    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+	    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+	}
 	// const rfConfig = {} // optional redux-firestore Config Options
 
 	const rrfConfig = {
