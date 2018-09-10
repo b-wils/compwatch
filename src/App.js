@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withFirebase } from 'react-redux-firebase'
-import {sortedMapsSelector, sortedHeroesSelector} from './redux/selectors'
+import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector} from './redux/selectors'
 
 import logo from './logo.svg';
 import './App.css';
@@ -78,7 +78,8 @@ class App extends Component {
       newSR: parseInt(newSR, 10),
       userId: this.props.auth.uid,
       firebaseTime: firestore.FieldValue.serverTimestamp(),
-      localTime: new Date()
+      localTime: new Date(),
+      season: this.props.season
     }
 
     firestore.add('matches', newMatch)
@@ -95,10 +96,6 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
         {this.state.message ? <div> {this.state.message}</div> : null}
         <form onSubmit={this.handleSubmit}>
           <div>
@@ -106,26 +103,20 @@ class App extends Component {
           </div>
 
           <div>
-          Damage:
-          {this.props.sortedHeroes.damage ? 
-            this.props.sortedHeroes.damage.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
-            <span> Loading Heroes </span>
-          }
-          </div>
-
-          <div>
-          Support:
-          {this.props.sortedHeroes.support ? 
-            this.props.sortedHeroes.support.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
-            <span> Loading Heroes </span>
-          }
-          </div>
-
-          <div>
-          Tank:
-          {this.props.sortedHeroes.tank ? 
-            this.props.sortedHeroes.tank.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
-            <span> Loading Heroes </span>
+          {this.props.sortedHeroes ? 
+            Object.keys(this.props.sortedHeroes).map((heroType, i) => {
+              return (
+                <div key={heroType}>
+                  <div>{heroType}:</div>
+                  
+                  {this.props.sortedHeroes[heroType].map((item,i) => 
+                    <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>
+                  )}
+                  
+                </div>
+              )
+            })
+            : <span> Loading Maps </span>
           }
           </div>
 
@@ -133,8 +124,8 @@ class App extends Component {
           {this.props.sortedMaps ? 
             Object.keys(this.props.sortedMaps).map((mapType, i) => {
               return (
-                <div>
-                  {mapType}:
+                <div key={mapType}>
+                  <div>{mapType}:</div>
                   
                   {this.props.sortedMaps[mapType].map((item,i) => 
                     <MapPickerItem key={item.name} map={item} onChange={this.mapSelectChange} checked={this.state.selectedMap === item.name  ? true : false}/>
@@ -165,6 +156,7 @@ class App extends Component {
     const { firestore } = this.context.store;
     firestore.get('heroes');
     firestore.get('maps');
+    firestore.get('globals');
   }
 }
 
@@ -228,7 +220,8 @@ const mapStateToProps = (state, ownProps = {}) => {
   return {
     auth: state.firebase.auth,
     sortedHeroes: sortedHeroesSelector(state),
-    sortedMaps: sortedMapsSelector(state)
+    sortedMaps: sortedMapsSelector(state),
+    season: currentSeasonSelector(state)
   };
 }
 
