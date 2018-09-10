@@ -72,7 +72,7 @@ class App extends Component {
     var firestore = this.context.store.firestore
     var {selectedHeroes, selectedMap, newSR} = this.state;
 
-    var newGame = {
+    var newMatch = {
       heroes: Object.keys(selectedHeroes).filter((key) => {return selectedHeroes[key] !== false;  }),
       map: selectedMap,
       newSR: parseInt(newSR, 10),
@@ -81,13 +81,13 @@ class App extends Component {
       localTime: new Date()
     }
 
-    firestore.add('games', newGame)
+    firestore.add('matches', newMatch)
 
     this.setState({
       newSR: "",
       selectedHeroes: {},
       selectedMap: null,
-      message: "Game submitted"
+      message: "Match submitted"
     })
 
   }
@@ -225,7 +225,6 @@ function getImageFromMap(map) {
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
-  console.log(sortedHeroesSelector(state))
   return {
     auth: state.firebase.auth,
     sortedHeroes: sortedHeroesSelector(state),
