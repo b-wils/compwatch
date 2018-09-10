@@ -4,6 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withFirebase } from 'react-redux-firebase'
+import {sortedMapsSelector, sortedHeroesSelector} from './redux/selectors'
 
 import logo from './logo.svg';
 import './App.css';
@@ -103,19 +104,49 @@ class App extends Component {
           <div>
             New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
           </div>
+
           <div>
-          {this.props.heroes ? 
-            this.props.heroes.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
+          Damage:
+          {this.props.sortedHeroes.damage ? 
+            this.props.sortedHeroes.damage.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
             <span> Loading Heroes </span>
           }
           </div>
 
           <div>
-          {this.props.maps ? 
-            this.props.maps.map((item,i) => <MapPickerItem key={item.name} map={item} onChange={this.mapSelectChange} checked={this.state.selectedMap === item.name  ? true : false}/>) :
-            <span> Loading Maps </span>
+          Support:
+          {this.props.sortedHeroes.support ? 
+            this.props.sortedHeroes.support.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
+            <span> Loading Heroes </span>
           }
           </div>
+
+          <div>
+          Tank:
+          {this.props.sortedHeroes.tank ? 
+            this.props.sortedHeroes.tank.map((item,i) => <HeroPickerItem key={item.name} hero={item} onChange={this.heroSelectChange} checked={this.state.selectedHeroes[item.name]  ? true : false}/>) :
+            <span> Loading Heroes </span>
+          }
+          </div>
+
+          <div>
+          {this.props.sortedMaps ? 
+            Object.keys(this.props.sortedMaps).map((mapType, i) => {
+              return (
+                <div>
+                  {mapType}:
+                  
+                  {this.props.sortedMaps[mapType].map((item,i) => 
+                    <MapPickerItem key={item.name} map={item} onChange={this.mapSelectChange} checked={this.state.selectedMap === item.name  ? true : false}/>
+                  )}
+                  
+                </div>
+              )
+            })
+            : <span> Loading Maps </span>
+          }
+          </div>
+
           {!isEmpty(this.props.auth) ?
            <div><input type="submit" value="Submit" /></div> :
             null }
@@ -194,10 +225,11 @@ function getImageFromMap(map) {
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
+  console.log(sortedHeroesSelector(state))
   return {
-    heroes: state.firestore.ordered.heroes,
     auth: state.firebase.auth,
-    maps: state.firestore.ordered.maps
+    sortedHeroes: sortedHeroesSelector(state),
+    sortedMaps: sortedMapsSelector(state)
   };
 }
 
