@@ -2,6 +2,7 @@
   "name": "my-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://scramblor.github.io/compwatch",
   "dependencies": {
     "dotenv": "^6.0.0",
     "firebase": "^5.4.2",
@@ -20,9 +21,12 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "popdb": "node scripts/provisionDB"
+    "popdb": "node scripts/provisionDB",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "devDependencies": {
+    "gh-pages": "^1.2.0",
     "redux-devtools-extension": "^2.13.5"
   }
 }

@@ -162,7 +162,7 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
 
 
 function getImageFromHero(hero) {
-  return "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
+  return process.env.PUBLIC_URL + "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
 }
 
 const MapPickerItem = ({map, onChange, checked}) => {
@@ -190,7 +190,7 @@ const MapPickerItem = ({map, onChange, checked}) => {
 
 
 function getImageFromMap(map) {
-  return "/images/maps/" + map.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + "_link.png";
+  return process.env.PUBLIC_URL + "/images/maps/" + map.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + "_link.png";
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
