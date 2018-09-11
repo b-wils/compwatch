@@ -4,7 +4,9 @@ import get from 'lodash.get';
 const heroesSelector = state => state.firestore.ordered.heroes || [];
 const mapsSelector = state => state.firestore.ordered.maps || [];
 const globalsSelector = state => state.firestore.data.globals || {};
+const matchesSelector = state => state.firestore.ordered.matches || [];
 
+// Global Selectors
 export const currentSeasonSelector = createSelector(
 	globalsSelector,
 	globals => get(globals, 'season.season', undefined))
@@ -58,3 +60,18 @@ export const sortedMapsSelector = createSelector(assaultMapsSelector, escortMaps
 			control: controlMaps
 		}
 	})
+
+// Match selecotrs
+
+// By default matches are sorted by most recent first
+export const getMathcesSortedByRecent = createSelector(
+	matchesSelector,
+	matches => matches)
+
+export const getMostRecentMatchSelector = createSelector(
+	getMathcesSortedByRecent,
+	matches =>  matches[0])
+
+export const getCurrentSRSelector = createSelector(
+	getMostRecentMatchSelector,
+	match =>  get(match, "newSR", 0))

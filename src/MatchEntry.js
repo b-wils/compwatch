@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withFirebase } from 'react-redux-firebase'
-import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector} from './redux/selectors'
+import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from './redux/selectors'
 
 import logo from './logo.svg';
 
@@ -19,11 +19,13 @@ class MatchEntry extends Component {
       newSR: "",
       selectedHeroes: {},
       selectedMap: null,
-      message: ""
+      message: "",
+      currentSR: 0
     }
     this.heroSelectChange = this.heroSelectChange.bind(this);
     this.mapSelectChange = this.mapSelectChange.bind(this);
     this.newSRChange = this.newSRChange.bind(this);
+    this.currentSRChange = this.currentSRChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -34,6 +36,15 @@ class MatchEntry extends Component {
       message: ""
     })
   }
+
+  currentSRChange(event) {
+    var currentSR = event.target.value;
+    this.setState({
+      currentSR: currentSR,
+      message: ""
+    })
+  }
+
 
   heroSelectChange(event) {
     const target = event.target;
@@ -69,15 +80,31 @@ class MatchEntry extends Component {
     event.preventDefault();
 
     var firestore = this.context.store.firestore
-    var {selectedHeroes, selectedMap, newSR} = this.state;
+    var {selectedHeroes, selectedMap, newSR, currentSR} = this.state;
+
+    currentSR = parseInt(currentSR, 10)
+
+    var result;
+
+    if (newSR > currentSR) {
+      result = 'win'
+    } else if (newSR < currentSR) {
+      result = 'loss'
+    } else {
+      result = 'draw'
+    }
 
     var newMatch = {
       heroes: Object.keys(selectedHeroes).filter((key) => {return selectedHeroes[key] !== false;  }),
       map: selectedMap,
+      lastSR: this.props.lastSR,
+      currentSR: currentSR,
       newSR: parseInt(newSR, 10),
+      isCurrentSRChanged: (this.props.lastSR != currentSR),
       userId: this.props.auth.uid,
       firebaseTime: firestore.FieldValue.serverTimestamp(),
       localTime: new Date(),
+      result: result,
       season: this.props.season
     }
     firestore.add({collection: 'matches'}, newMatch)
@@ -86,7 +113,8 @@ class MatchEntry extends Component {
       newSR: "",
       selectedHeroes: {},
       selectedMap: null,
-      message: "Match submitted"
+      message: "Match submitted",
+      currentSR: newSR
     })
 
   }
@@ -97,6 +125,7 @@ class MatchEntry extends Component {
         {this.state.message ? <div> {this.state.message}</div> : null}
         <form onSubmit={this.handleSubmit}>
           <div>
+            Current SR: <input type="text" name="currentSR" value={this.state.currentSR} onChange={this.currentSRChange}/>
             New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
           </div>
 
@@ -154,12 +183,15 @@ class MatchEntry extends Component {
     const { firestore } = this.context.store;
     const userId = this.props.auth.uid;
 
-    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId] })
+    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
 
     firestore.get('heroes');
     firestore.get('maps');
     firestore.get('globals');
-    firestore.get({collection: 'matches', where: ['userId', '==', userId]});
+    firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']})
+        .then(()=>{
+          this.setState({currentSR: this.props.lastSR})
+        });
   }
 }
 
@@ -224,7 +256,8 @@ const mapStateToProps = (state, ownProps = {}) => {
     auth: state.firebase.auth,
     sortedHeroes: sortedHeroesSelector(state),
     sortedMaps: sortedMapsSelector(state),
-    season: currentSeasonSelector(state)
+    season: currentSeasonSelector(state),
+    lastSR: getCurrentSRSelector(state)
   };
 }
 
