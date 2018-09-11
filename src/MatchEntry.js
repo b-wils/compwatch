@@ -80,8 +80,7 @@ class MatchEntry extends Component {
       localTime: new Date(),
       season: this.props.season
     }
-
-    firestore.add('matches', newMatch)
+    firestore.add({collection: 'matches'}, newMatch)
 
     this.setState({
       newSR: "",
@@ -154,11 +153,13 @@ class MatchEntry extends Component {
   componentDidMount() {
     const { firestore } = this.context.store;
     const userId = this.props.auth.uid;
+
+    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId] })
+
     firestore.get('heroes');
     firestore.get('maps');
     firestore.get('globals');
-    // console.log(userId)
-    // firestore.get({collection: 'matches', where: ['userId', '==', userId]});
+    firestore.get({collection: 'matches', where: ['userId', '==', userId]});
   }
 }
 
