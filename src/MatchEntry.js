@@ -183,7 +183,7 @@ class MatchEntry extends Component {
     const { firestore } = this.context.store;
     const userId = this.props.auth.uid;
 
-    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
+    
 
     firestore.get('heroes');
     firestore.get('maps');
@@ -192,13 +192,16 @@ class MatchEntry extends Component {
         .then(()=>{
           this.setState({currentSR: this.props.lastSR})
         });
+
+
+    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
   }
 }
 
 const HeroPickerItem = ({hero, onChange, checked}) => {
     var labelStyle = {
-      height: "100px",
-      width: "112px",
+      height: "90px",
+      width: "101px",
       display:"inline-block",
       padding: "0 0 0 0px",
       borderStyle: 'solid',
@@ -213,7 +216,7 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
   return (
       <span>
         <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={hero.name} style={labelStyle}> <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name}/></label>
+        <label htmlFor={hero.name} style={labelStyle}> <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name} width='100%' height='100%'/></label>
       </span>
     );
 }
@@ -225,8 +228,8 @@ function getImageFromHero(hero) {
 
 const MapPickerItem = ({map, onChange, checked}) => {
     var labelStyle = {
-      height: "100px",
-      width: "112px",
+      height: "90px",
+      width: "101px",
       display:"inline-block",
       padding: "0 0 0 0px" ,
       borderStyle: 'solid',
@@ -240,7 +243,7 @@ const MapPickerItem = ({map, onChange, checked}) => {
   return (
       <span>
         <input type="radio" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={map.name} style={labelStyle}><img src={getImageFromMap(map)} alt={map.name} title={map.name}/></label>
+        <label htmlFor={map.name} style={labelStyle}><img src={getImageFromMap(map)} alt={map.name} title={map.name} width='100%' height='100%'/></label>
       </span>
     );
 
