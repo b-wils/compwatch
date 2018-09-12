@@ -22,6 +22,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+          {process.env.NODE_ENV === 'development' && <div>DEVELOPMENT BUILD</div>}
           {!isEmpty(this.props.auth) ?
            <MatchEntry /> :
            <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
