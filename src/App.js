@@ -22,7 +22,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        { this.props.auth.isLoaded ? <MatchEntry /> : null }
+          {!isEmpty(this.props.auth) ?
+           <MatchEntry /> :
+           <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
+             Login With Google</button> }
       </div>
     );
 
