@@ -27,6 +27,7 @@ class App extends Component {
            <MatchEntry /> :
            <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
              Login With Google</button> }
+          {process.env.NODE_ENV === 'development' && <div>DEVELOPMENT BUILD</div>}
       </div>
     );
 

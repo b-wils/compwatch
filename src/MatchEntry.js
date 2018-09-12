@@ -31,20 +31,54 @@ class MatchEntry extends Component {
 
   newSRChange(event) {
     var newSR = event.target.value;
+    
+    if (newSR === '') {
+      newSR = 0;
+    }
+
     this.setState({
-      newSR: newSR,
+      newSR: parseInt(newSR),
       message: ""
-    })
+    }, () => this.updateResults())
+
   }
 
   currentSRChange(event) {
     var currentSR = event.target.value;
+    
+    if (currentSR === '') {
+      currentSR = 0;
+    }
+
     this.setState({
-      currentSR: currentSR,
+      currentSR: parseInt(currentSR),
       message: ""
-    })
+    }, ()=> this.updateResults())
   }
 
+  updateResults() {
+
+    var {newSR, currentSR} = this.state;
+
+    currentSR = parseInt(currentSR, 10)
+    newSR = parseInt(newSR, 10)
+    var SRDiff = newSR - currentSR;
+
+    var result;
+
+    if (newSR > currentSR) {
+      result = 'win'
+    } else if (newSR < currentSR) {
+      result = 'loss'
+    } else {
+      result = 'draw'
+    }
+
+    this.setState({
+      SRDiff: SRDiff,
+      result: result
+    })
+  }
 
   heroSelectChange(event) {
     const target = event.target;
@@ -127,6 +161,7 @@ class MatchEntry extends Component {
           <div>
             Current SR: <input type="text" name="currentSR" value={this.state.currentSR} onChange={this.currentSRChange}/>
             New SR: <input type="text" name="newSR" value={this.state.newSR} onChange={this.newSRChange}/>
+            Result: {this.state.result} SR Change: {this.state.SRDiff}
           </div>
 
           <div>
@@ -205,7 +240,9 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
       display:"inline-block",
       padding: "0 0 0 0px",
       borderStyle: 'solid',
-      borderColor: 'white'
+      borderColor: 'white',
+      position:'relative',
+      'text-shadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
   }
 
   if (checked) {
@@ -216,7 +253,11 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
   return (
       <span>
         <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={hero.name} style={labelStyle}> <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name} width='100%' height='100%'/></label>
+        <label htmlFor={hero.name} style={labelStyle}>
+          <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name} width='100%' height='100%' style={{backgroundColor:'black'}} />
+          <span style={{position:'absolute', bottom: '5px', left:'50%', transform:'translate(-50%, 0)', color:'white'}}> {hero.name} </span>
+        </label>
+
       </span>
     );
 }
@@ -233,7 +274,9 @@ const MapPickerItem = ({map, onChange, checked}) => {
       display:"inline-block",
       padding: "0 0 0 0px" ,
       borderStyle: 'solid',
-      borderColor: 'white'
+      borderColor: 'white',
+      position:'relative',
+      'text-shadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
   }
 
   if (checked) {
@@ -243,7 +286,10 @@ const MapPickerItem = ({map, onChange, checked}) => {
   return (
       <span>
         <input type="radio" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={map.name} style={labelStyle}><img src={getImageFromMap(map)} alt={map.name} title={map.name} width='100%' height='100%'/></label>
+        <label htmlFor={map.name} style={labelStyle}>
+          <img src={getImageFromMap(map)} alt={map.name} title={map.name} width='100%' height='100%'/>
+          <span style={{position:'absolute', bottom: '5px', left:'40%', transform:'translate(-40%, 0)', color:'white'}}> {map.name} </span>
+        </label>
       </span>
     );
 
