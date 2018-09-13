@@ -4,9 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withFirebase } from 'react-redux-firebase'
-import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from './redux/selectors'
-
-import logo from './logo.svg';
+import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from '../redux/selectors'
 
 class MatchEntry extends Component {
   static contextTypes = {
@@ -242,7 +240,7 @@ const HeroPickerItem = ({hero, onChange, checked}) => {
       borderStyle: 'solid',
       borderColor: 'white',
       position:'relative',
-      'text-shadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
+      'textShadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
   }
 
   if (checked) {
@@ -276,7 +274,7 @@ const MapPickerItem = ({map, onChange, checked}) => {
       borderStyle: 'solid',
       borderColor: 'white',
       position:'relative',
-      'text-shadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
+      'textShadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
   }
 
   if (checked) {
