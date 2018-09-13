@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 
 class MatchEntryPresentation extends Component {
   render() {
@@ -57,31 +58,26 @@ class MatchEntryPresentation extends Component {
   }
 }
 
+const PickerItem = styled.label `
+      height: 90px;
+      width: 101px;
+      display: inline-block;
+      padding: 0 0 0 0px;
+      border-style: solid;
+      border-color: ${props => props.checked ? "red" : "white"};
+      position: relative;
+      text-shadow: -1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000;
+`;
+
 
 const HeroPickerItem = ({hero, onChange, checked}) => {
-    var labelStyle = {
-      height: "90px",
-      width: "101px",
-      display:"inline-block",
-      padding: "0 0 0 0px",
-      borderStyle: 'solid',
-      borderColor: 'white',
-      position:'relative',
-      'textShadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
-  }
-
-  if (checked) {
-    labelStyle['borderColor'] = "red";
-    labelStyle['borderStyle'] = "solid";
-  }
-
   return (
       <span>
         <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={hero.name} style={labelStyle}>
+        <PickerItem htmlFor={hero.name} checked={checked}>
           <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name} width='100%' height='100%' style={{backgroundColor:'black'}} />
           <span style={{position:'absolute', bottom: '5px', left:'50%', transform:'translate(-50%, 0)', color:'white'}}> {hero.name} </span>
-        </label>
+        </PickerItem>
 
       </span>
     );
@@ -93,28 +89,13 @@ function getImageFromHero(hero) {
 }
 
 const MapPickerItem = ({map, onChange, checked}) => {
-    var labelStyle = {
-      height: "90px",
-      width: "101px",
-      display:"inline-block",
-      padding: "0 0 0 0px" ,
-      borderStyle: 'solid',
-      borderColor: 'white',
-      position:'relative',
-      'textS  hadow': '-1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000'
-  }
-
-  if (checked) {
-    labelStyle['borderColor'] = "red";
-  }
-
   return (
       <span>
         <input type="radio" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <label htmlFor={map.name} style={labelStyle}>
+        <PickerItem htmlFor={map.name} checked={checked}>
           <img src={getImageFromMap(map)} alt={map.name} title={map.name} width='100%' height='100%'/>
           <span style={{position:'absolute', bottom: '5px', left:'40%', transform:'translate(-40%, 0)', color:'white'}}> {map.name} </span>
-        </label>
+        </PickerItem>
       </span>
     );
 
