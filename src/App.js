@@ -2,11 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
-import { withFirebase } from 'react-redux-firebase'
-import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector} from './redux/selectors'
+import { firebaseConnect, isEmpty } from 'react-redux-firebase'
 
-import logo from './logo.svg';
 import './App.css';
 import MatchEntry from './MatchEntry/MatchEntryContainer'
 

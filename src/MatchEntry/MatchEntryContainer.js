@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect, isLoaded, isEmpty } from 'react-redux-firebase'
-import { withFirebase } from 'react-redux-firebase'
+import { firebaseConnect } from 'react-redux-firebase'
 import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from '../redux/selectors'
 import MatchEntryPresentation from './MatchEntryPresentation'
 
@@ -36,7 +35,7 @@ class MatchEntryContainer extends Component {
       currentSRChange: this.currentSRChange,
       heroSelectChange: this.heroSelectChange,
       mapSelectChange: this.mapSelectChange,
-      handleSubmit: this.handleSubmit
+      handleSubmit: this.heroSelectChange
     }
 
     // console.log(props)
@@ -53,7 +52,7 @@ class MatchEntryContainer extends Component {
     }
 
     this.setState({
-      newSR: parseInt(newSR),
+      newSR: parseInt(newSR, 10),
       message: ""
     }, () => this.updateResults())
 
@@ -67,7 +66,7 @@ class MatchEntryContainer extends Component {
     }
 
     this.setState({
-      currentSR: parseInt(currentSR),
+      currentSR: parseInt(currentSR, 10),
       message: ""
     }, ()=> this.updateResults())
   }
@@ -114,7 +113,6 @@ class MatchEntryContainer extends Component {
 
   mapSelectChange(event) {
     const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
@@ -136,7 +134,7 @@ class MatchEntryContainer extends Component {
       lastSR: this.props.lastSR,
       currentSR: currentSR,
       newSR: newSR,
-      isCurrentSRChanged: (this.props.lastSR != currentSR),
+      isCurrentSRChanged: (this.props.lastSR !== currentSR),
       userId: this.props.auth.uid,
       firebaseTime: firestore.FieldValue.serverTimestamp(),
       localTime: new Date(),
