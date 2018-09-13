@@ -8,7 +8,7 @@ import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector} from '.
 
 import logo from './logo.svg';
 import './App.css';
-import MatchEntry from './MatchEntry/MatchEntry'
+import MatchEntry from './MatchEntry/MatchEntryContainer'
 
 
 class App extends Component {
