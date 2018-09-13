@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 
 class MatchEntryPresentation extends Component {
   render() {
@@ -21,7 +21,7 @@ class MatchEntryPresentation extends Component {
                   <div>{heroType}:</div>
                   
                   {this.props.sortedHeroes[heroType].map((item,i) => 
-                    <HeroPickerItem key={item.name} hero={item} onChange={this.props.heroSelectChange} checked={this.props.selectedHeroes[item.name]  ? true : false}/>
+                    <PickerElement key={item.name} imgUrl={getImageFromHero(item)} name={item.name} onChange={this.props.heroSelectChange} checked={this.props.selectedHeroes[item.name]  ? true : false}/>
                   )}
                   
                 </div>
@@ -39,7 +39,7 @@ class MatchEntryPresentation extends Component {
                   <div>{mapType}:</div>
                   
                   {this.props.sortedMaps[mapType].map((item,i) => 
-                    <MapPickerItem key={item.name} map={item} onChange={this.props.mapSelectChange} checked={this.props.selectedMap === item.name  ? true : false}/>
+                    <PickerElement imgUrl={getImageFromMap(item)} key={item.name} name={item.name} onChange={this.props.mapSelectChange} checked={this.props.selectedMap === item.name  ? true : false}/>
                   )}
                   
                 </div>
@@ -58,6 +58,26 @@ class MatchEntryPresentation extends Component {
   }
 }
 
+function getImageFromHero(hero) {
+  return process.env.PUBLIC_URL + "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
+}
+
+function getImageFromMap(map) {
+  return process.env.PUBLIC_URL + "/images/maps/" + map.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + "_link.png";
+}
+
+const PickerElement = ({name, onChange, checked, imgUrl}) => {
+  return (
+      <span>
+        <input type="radio" name={name} id={name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
+        <PickerItem htmlFor={name} checked={checked}>
+          <PickerImage src={imgUrl} alt={name} title={name} />
+          <PickerText> {name} </PickerText>
+        </PickerItem>
+      </span>
+    );
+};
+
 const PickerItem = styled.label `
       height: 90px;
       width: 101px;
@@ -66,43 +86,27 @@ const PickerItem = styled.label `
       border-style: solid;
       border-color: ${props => props.checked ? "red" : "white"};
       position: relative;
-      text-shadow: -1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000;
+      filter: ${props => props.checked ? "grayscale(0%)" : "grayscale(70%)"};;
+      ${css`
+          &:hover {
+            -webkit-filter: grayscale(0%); /* Safari 6.0 - 9.0 */
+            filter: grayscale(0%);
+          }
+      `}
 `;
 
+const PickerImage = styled.img `
+  width: 100%;
+  height: 100%;
+`;
 
-const HeroPickerItem = ({hero, onChange, checked}) => {
-  return (
-      <span>
-        <input type="checkbox" name={hero.name} id={hero.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <PickerItem htmlFor={hero.name} checked={checked}>
-          <img src={getImageFromHero(hero)} title={hero.name} alt={hero.name} width='100%' height='100%' style={{backgroundColor:'black'}} />
-          <span style={{position:'absolute', bottom: '5px', left:'50%', transform:'translate(-50%, 0)', color:'white'}}> {hero.name} </span>
-        </PickerItem>
-
-      </span>
-    );
-}
-
-
-function getImageFromHero(hero) {
-  return process.env.PUBLIC_URL + "/images/heroes/Icon-" + hero.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + ".png";
-}
-
-const MapPickerItem = ({map, onChange, checked}) => {
-  return (
-      <span>
-        <input type="radio" name={map.name} id={map.name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
-        <PickerItem htmlFor={map.name} checked={checked}>
-          <img src={getImageFromMap(map)} alt={map.name} title={map.name} width='100%' height='100%'/>
-          <span style={{position:'absolute', bottom: '5px', left:'40%', transform:'translate(-40%, 0)', color:'white'}}> {map.name} </span>
-        </PickerItem>
-      </span>
-    );
-
-}
-
-function getImageFromMap(map) {
-  return process.env.PUBLIC_URL + "/images/maps/" + map.name.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, "_") + "_link.png";
-}
+const PickerText = styled.span `
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  color: white;
+  text-shadow: -1px -1px 1px rgba(0,0,0,0.667), 1px 1px 1px #000000;
+`
 
 export default MatchEntryPresentation
