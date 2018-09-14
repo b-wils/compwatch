@@ -35,7 +35,7 @@ class MatchEntryContainer extends Component {
       currentSRChange: this.currentSRChange,
       heroSelectChange: this.heroSelectChange,
       mapSelectChange: this.mapSelectChange,
-      handleSubmit: this.heroSelectChange
+      handleSubmit: this.handleSubmit
     }
 
     // console.log(props)
