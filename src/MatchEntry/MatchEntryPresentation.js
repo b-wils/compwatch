@@ -2,14 +2,29 @@ import React, { Component } from 'react';
 import styled, {css} from 'styled-components';
 
 class MatchEntryPresentation extends Component {
+
+  constructor(props) {
+    super(props);
+    // create a ref to store the textInput DOM element
+    this.textInput = React.createRef();
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event) {
+    // Explicitly focus the text input using the raw DOM API
+    // Note: we're accessing "current" to get the DOM node
+    this.textInput.current.focus();
+    this.props.handleSubmit(event)
+  }
+
   render() {
     return (
       <div className="MatchEntry">
         {this.props.message ? <div> {this.props.message}</div> : null}
-        <FlexContainer onSubmit={this.props.handleSubmit}>
+        <FlexContainer onSubmit={this.handleSubmit}>
           <div style={{width: '100%'}}>
             Current SR: <input type="text" name="currentSR" value={this.props.currentSR} onChange={this.props.currentSRChange}/>
-            New SR: <input type="text" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange}/>
+            New SR: <input type="text" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput}/>
             Result: {this.props.result} SR Change: {this.props.SRDiff}
           </div>
 
