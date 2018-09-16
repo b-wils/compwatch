@@ -23,8 +23,8 @@ class MatchEntryPresentation extends Component {
         {this.props.message ? <div> {this.props.message}</div> : null}
         <FlexContainer onSubmit={this.handleSubmit}>
           <div style={{width: '100%'}}>
-            Current SR: <input type="text" name="currentSR" value={this.props.currentSR} onChange={this.props.currentSRChange}/>
-            New SR: <input type="text" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput}/>
+            Current SR: <input type="text" name="currentSR" value={this.props.currentSR} onChange={this.props.currentSRChange} autocomplete="off"/>
+            New SR: <input type="text" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput} autocomplete="off"/>
             Result: {this.props.result} SR Change: {this.props.SRDiff}
           </div>
 
