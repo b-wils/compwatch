@@ -46,13 +46,13 @@ class MatchEntryContainer extends Component {
 
   newSRChange(event) {
     var newSR = event.target.value;
-    
-    if (newSR === '') {
-      newSR = 0;
+
+    if (newSR !== '') {
+      newSR = parseInt(newSR, 10)
     }
 
     this.setState({
-      newSR: parseInt(newSR, 10),
+      newSR: newSR,
       message: ""
     }, () => this.updateResults())
 
@@ -60,26 +60,31 @@ class MatchEntryContainer extends Component {
 
   currentSRChange(event) {
     var currentSR = event.target.value;
-    
-    if (currentSR === '') {
-      currentSR = 0;
+
+    if (currentSR !== '') {
+      currentSR = parseInt(currentSR, 10)
     }
 
     this.setState({
-      currentSR: parseInt(currentSR, 10),
+      currentSR: currentSR,
       message: ""
-    }, ()=> this.updateResults())
+    }, () => this.updateResults())
   }
 
   updateResults() {
 
     var {newSR, currentSR} = this.state;
 
-    currentSR = parseInt(currentSR, 10)
-    newSR = parseInt(newSR, 10)
     var SRDiff = newSR - currentSR;
 
     var result;
+
+    console.log(newSR)
+
+    if (currentSR === '' || newSR === '') {
+      result = '';
+      SRDiff = null;
+    }
 
     if (newSR > currentSR) {
       result = 'win'
