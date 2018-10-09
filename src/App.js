@@ -19,17 +19,21 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          {process.env.NODE_ENV === 'development' && <div>DEVELOPMENT BUILD</div>}
+          {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
           {!isEmpty(this.props.auth) ?
            <MatchEntry /> :
            <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
              Login With Google</button> }
-          {process.env.NODE_ENV === 'development' && <div>DEVELOPMENT BUILD</div>}
+          {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
       </div>
     );
 
   }
 
+}
+
+const DevWarningDiv = () => {
+  return <div style={{color: 'white', backgroundColor: 'red'}}>DEVELOPMENT BUILD</div>
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
