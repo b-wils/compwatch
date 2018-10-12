@@ -25,7 +25,8 @@ class MatchEntryPresentation extends Component {
           <div style={{width: '100%'}}>
             Current SR: <input type="text" pattern="[0-9]*" name="currentSR" value={this.props.currentSR} onChange={this.props.currentSRChange} autoComplete="off"/>
             New SR: <input type="text" pattern="[0-9]*" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput} autoComplete="off"/>
-            Result: {this.props.result} SR Change: {this.props.SRDiff}
+            SR Change: {this.props.SRDiff}
+            <ResultRadio currentResult={this.props.result} onChange={this.props.resultSelectChange} />
           </div>
 
           <div style={{'maxWidth': '900px', margin: '10px'}}>
@@ -64,7 +65,6 @@ class MatchEntryPresentation extends Component {
           }
           </div>
 
-
            <div style={{width: '100%'}}><input type="submit" value="Submit" /></div> 
         </FlexContainer>
       </div>
@@ -92,6 +92,36 @@ const PickerElement = ({name, onChange, checked, imgUrl, type}) => {
       </span>
     );
 };
+
+const ResultRadio = ({currentResult, onChange}) => {
+  return (
+      <span>
+        <ResultRadioElement name='Win' onChange={onChange} checked={currentResult === 'win'  ? true : false}/>
+        <ResultRadioElement name='Draw' onChange={onChange} checked={currentResult === 'draw'  ? true : false}/>
+        <ResultRadioElement name='Loss' onChange={onChange} checked={currentResult === 'loss'  ? true : false}/>
+      </span>
+    );
+}
+
+const ResultRadioElement = ({name, onChange, checked}) => {
+  return (
+      <span>
+        <input type='radio' name={name} id={name} style={{display:'none'}} onChange={onChange} checked={checked} value={checked}/>
+        <ResultLabel htmlFor={name} checked={checked}>
+           {name}
+        </ResultLabel>
+      </span>
+    );
+};
+
+const ResultLabel = styled.label `
+    height: 30px;
+    width: 80px;
+    display: inline-block;
+    border-style: solid;
+    border-color: ${props => props.checked ? "red" : "white"};
+`
+
 
 const FlexContainer = styled.form `
   display: flex;

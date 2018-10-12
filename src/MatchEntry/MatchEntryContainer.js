@@ -6,6 +6,11 @@ import { firebaseConnect } from 'react-redux-firebase'
 import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from '../redux/selectors'
 import MatchEntryPresentation from './MatchEntryPresentation'
 
+const DEFAULT_SR_CHANGE = 25;
+const MINIMUM_SR_UPDATE = 500;
+const MAXIMUM_SR_UPDATE = 6000;
+const MAXIMUM_SR_DIFFERENCE_UPDATE = 200;
+
 class MatchEntryContainer extends Component {
   static contextTypes = {
     store: PropTypes.object.isRequired
@@ -25,6 +30,7 @@ class MatchEntryContainer extends Component {
     this.newSRChange = this.newSRChange.bind(this);
     this.currentSRChange = this.currentSRChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.resultSelectChange = this.resultSelectChange.bind(this);
   }
 
   render() {
@@ -35,7 +41,8 @@ class MatchEntryContainer extends Component {
       currentSRChange: this.currentSRChange,
       heroSelectChange: this.heroSelectChange,
       mapSelectChange: this.mapSelectChange,
-      handleSubmit: this.handleSubmit
+      handleSubmit: this.handleSubmit,
+      resultSelectChange: this.resultSelectChange
     }
 
     // console.log(props)
@@ -69,6 +76,41 @@ class MatchEntryContainer extends Component {
       currentSR: currentSR,
       message: ""
     }, () => this.updateResults())
+  }
+
+  resultSelectChange(event) {
+
+    var {currentSR} = this.state;
+
+    const target = event.target;
+    const name = target.name.toLowerCase();
+
+    switch (name) {
+      case 'win':
+        this.setState({
+          result: 'win',
+          SRDiff: DEFAULT_SR_CHANGE,
+          newSR: currentSR + DEFAULT_SR_CHANGE
+        })
+        break;
+      case 'draw':
+        this.setState({
+          result: 'draw',
+          SRDiff: 0,
+          newSR: currentSR
+        })
+        break;
+      case 'loss':
+        this.setState({
+          result: 'loss',
+          SRDiff: -DEFAULT_SR_CHANGE,
+          newSR: currentSR - DEFAULT_SR_CHANGE
+        })
+        break;
+      default:
+        console.log('warning unknown result')
+        break;
+    }
   }
 
   updateResults() {
