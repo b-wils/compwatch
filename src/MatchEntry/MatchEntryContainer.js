@@ -200,7 +200,9 @@ class MatchEntryContainer extends Component {
       selectedHeroes: {},
       selectedMap: null,
       message: "Match submitted",
-      currentSR: newSR
+      currentSR: newSR,
+      result: '',
+      SRDiff: null
     })
 
   }
