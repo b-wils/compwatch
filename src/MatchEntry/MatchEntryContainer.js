@@ -7,8 +7,8 @@ import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurr
 import MatchEntryPresentation from './MatchEntryPresentation'
 
 const DEFAULT_SR_CHANGE = 25;
-const MINIMUM_SR_UPDATE = 500;
-const MAXIMUM_SR_UPDATE = 6000;
+// const MINIMUM_SR_UPDATE = 500;
+// const MAXIMUM_SR_UPDATE = 6000;
 const MAXIMUM_SR_DIFFERENCE_UPDATE = 200;
 
 class MatchEntryContainer extends Component {
@@ -119,9 +119,13 @@ class MatchEntryContainer extends Component {
 
     var SRDiff = newSR - currentSR;
 
-    var result;
+    // Large SR changes typically mean the user is typing and we shouldn't update prematurely
+    // Not sure if this is a good solution
+    if (Math.abs(SRDiff) > MAXIMUM_SR_DIFFERENCE_UPDATE) {
+      return;
+    }
 
-    console.log(newSR)
+    var result;
 
     if (currentSR === '' || newSR === '') {
       result = '';
