@@ -21,8 +21,12 @@ class App extends Component {
       <div className="App">
           {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
           {!isEmpty(this.props.auth) ?
-           <MatchEntry /> :
-           <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
+            <div>
+              <MatchEntry /> 
+              <button onClick={() => this.props.firebase.logout({ provider: 'google', type: 'popup' })}> Logout </button>
+            </div>
+            :
+            <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
              Login With Google</button> }
           {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
       </div>
