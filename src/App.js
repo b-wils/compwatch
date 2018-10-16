@@ -4,6 +4,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty } from 'react-redux-firebase'
 
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+
+import AppRoute from './common/AppRoute'
 import './App.css';
 import MatchEntry from './MatchEntry/MatchEntryContainer'
 
@@ -13,28 +16,43 @@ class App extends Component {
     store: PropTypes.object.isRequired
   }
 
-  // Don't load any data until firebase auth is loaded. We will need the userid for certain queries
-  // TODO Not all queries or pages need userid so we should make a better way to do this
-
   render() {
     return (
-      <div className="App">
+      <Router>
+        <div className="App">
           {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
-          {!isEmpty(this.props.auth) ?
-            <div>
-              <MatchEntry /> 
-              <button onClick={() => this.props.firebase.logout({ provider: 'google', type: 'popup' })}> Logout </button>
-            </div>
-            :
-            <button onClick={() => this.props.firebase.login({ provider: 'google', type: 'popup' })}>
-             Login With Google</button> }
+          <Route exact path="/" component={WelcomePage}/>
+          <Route exact path="/login" component={WrappedLoginPage}/>
+          <AppRoute exact path="/addmatch" component={MatchEntry} />
           {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
-      </div>
+        </div>
+      </Router>
     );
 
   }
 
 }
+
+const WelcomePage = () => {
+  return (
+      <div>
+        Welcome to Overlogger!
+        <Link to="/login"> Login </Link>
+      </div>
+    )
+}
+
+const LoginPage = ({firebase,auth}) => {
+  return (
+      <div>
+        <button onClick={() => firebase.login({ provider: 'google', type: 'popup' })}>
+          Login With Google
+        </button>
+      </div>
+    )
+}
+
+const WrappedLoginPage = compose(firebaseConnect())(LoginPage, connect(mapStateToProps));
 
 const DevWarningDiv = () => {
   return <div style={{color: 'white', backgroundColor: 'red'}}>DEVELOPMENT BUILD</div>
@@ -53,7 +71,4 @@ App.propTypes = {
   auth: PropTypes.object
 }
 
-export default compose(
-  firebaseConnect(),
-  connect(mapStateToProps)
-)(App)
+export default App
