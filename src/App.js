@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { firebaseConnect, isEmpty } from 'react-redux-firebase'
+import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 
 import AppRoute from './common/AppRoute'
 import './App.css';
@@ -42,23 +42,27 @@ const WelcomePage = () => {
     )
 }
 
-const LoginPage = ({firebase,auth}) => {
-  return (
-      <div>
-        <button onClick={() => firebase.login({ provider: 'google', type: 'popup' })}>
-          Login With Google
-        </button>
-      </div>
-    )
-}
+// TODO Login page will always redirect if you are already logged in. Should we only redirect after successful login?
+const LoginPage = ({firebase,auth}) => (
+        !isLoaded(auth)
+        ? <span>Loading...</span>
+        : isEmpty(auth)
+          ? <div>
+              <button onClick={() => firebase.login({ provider: 'google', type: 'popup' })}>
+                Login With Google
+              </button>
+            </div>
+          : <Redirect to="/addmatch"/>
+  )
 
-const WrappedLoginPage = compose(firebaseConnect())(LoginPage, connect(mapStateToProps));
+const WrappedLoginPage = compose(firebaseConnect(), connect(({ firebase: { auth } }) => ({ auth })))(LoginPage);
 
 const DevWarningDiv = () => {
   return <div style={{color: 'white', backgroundColor: 'red'}}>DEVELOPMENT BUILD</div>
 }
 
 const mapStateToProps = (state, ownProps = {}) => {
+  console.log(state.firebase.auth)
   return {
     auth: state.firebase.auth,
   };
