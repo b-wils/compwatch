@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 
-import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 
 import AppRoute from './common/AppRoute'
 import './App.css';
@@ -18,15 +18,19 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
-        <div className="App">
-          {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
-          <Route exact path="/" component={WelcomePage}/>
-          <Route exact path="/login" component={WrappedLoginPage}/>
-          <AppRoute exact path="/addmatch" component={MatchEntry} />
-          {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
-        </div>
-      </Router>
+      <div className="App">
+        {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
+        
+        <Router>
+          <Switch>
+            <Route exact path="/" component={WelcomePage}/>
+            <Route path="/login" component={WrappedLoginPage}/>
+            <AppRoute path="/addmatch" component={MatchEntry} />
+          </Switch>
+        </Router>
+        
+        {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
+      </div>
     );
 
   }
