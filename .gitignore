@@ -28,3 +28,4 @@ yarn-error.log*
 /src/config/*
 !/src/config/prod.js
 !/src/config/dev.sample.js
+\.firebase/
