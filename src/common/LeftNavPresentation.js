@@ -4,10 +4,10 @@ import styled, {css} from 'styled-components';
 
 const NAV_WIDTH = '200px'
 
-const LeftNav = () => (
+const LeftNav = ({sessionRecord}) => (
 	<LeftNavBuffer>
 		<LeftNavDiv>
-			LeftNav
+			Session Record: {`${sessionRecord.wins} - ${sessionRecord.losses} - ${sessionRecord.draws}`}
 		</LeftNavDiv>
 	</LeftNavBuffer>
 )
@@ -20,9 +20,10 @@ const LeftNavDiv = styled.div `
 	position: fixed;
 `
 
+// TODO need a good way for nav height to fill remaining space
 const LeftNavBuffer  = styled.div `
 	width: ${NAV_WIDTH};
-	min-height: 100vh;
+	min-height: 80vh;
 	float: left;
 	position: relative;
 `

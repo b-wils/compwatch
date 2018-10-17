@@ -6,7 +6,7 @@ import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import styled, {css} from 'styled-components';
 
 import Header from './Header'
-import LeftNav from './LeftNav'
+import LeftNav from './LeftNavContainer'
 
 const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 	return (
