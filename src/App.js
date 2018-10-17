@@ -7,7 +7,7 @@ import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 
 import AppRoute from './common/AppRoute'
-import './App.css';
+// import './App.css';
 import MatchEntry from './MatchEntry/MatchEntryContainer'
 
 
@@ -18,18 +18,18 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
+      <div style={{textAlign: 'center'}}>
+        {process.env.NODE_ENV === 'development' && <DevWarningDiv position="top"/>}
         
         <Router>
           <Switch>
-            <Route exact path="/" component={WelcomePage}/>
             <Route path="/login" component={WrappedLoginPage}/>
             <AppRoute path="/addmatch" component={MatchEntry} />
+            <Route exact path="/" component={WelcomePage}/>
           </Switch>
         </Router>
-        
-        {process.env.NODE_ENV === 'development' && <DevWarningDiv/>}
+
+        {process.env.NODE_ENV === 'development' && <DevWarningDiv position="bottom"/>}
       </div>
     );
 
@@ -61,15 +61,19 @@ const LoginPage = ({firebase,auth}) => (
 
 const WrappedLoginPage = compose(firebaseConnect(), connect(({ firebase: { auth } }) => ({ auth })))(LoginPage);
 
-const DevWarningDiv = () => {
-  return <div style={{color: 'white', backgroundColor: 'red'}}>DEVELOPMENT BUILD</div>
-}
-
-const mapStateToProps = (state, ownProps = {}) => {
-  console.log(state.firebase.auth)
-  return {
-    auth: state.firebase.auth,
-  };
+const DevWarningDiv = ({position}) => {
+  var style = {color: 'white', backgroundColor: 'red', position: 'fixed', width:'100%', zIndex:100}
+  switch (position) {
+    case 'top':
+      style.top = '0px'
+      break;
+    case 'bottom':
+      style.bottom = '0px'
+      break;
+    default:
+      console.log('warning dev div with no position')
+  }
+  return <div style={style}>DEVELOPMENT BUILD</div>
 }
 
 App.propTypes = {
