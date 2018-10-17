@@ -15,8 +15,8 @@ const Header = () => (
 const HeaderDiv = styled.div `
 	width: 100%;
 	height: ${HeaderHeight};
-	background-color: black;
-	color: white;
+	background-color: ${props => props.theme.primary};
+	color: ${props => props.theme.light};
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -25,7 +25,7 @@ const HeaderDiv = styled.div `
 	position: fixed;
 	top: 0px;
 	z-index: 90;
-	border-bottom: 2px solid gray;
+	border-bottom: 2px solid ${props => props.theme.mid};
 `
 
 const HeaderBuffer = styled.div `

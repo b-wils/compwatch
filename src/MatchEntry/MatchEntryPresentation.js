@@ -119,7 +119,7 @@ const ResultLabel = styled.label `
     width: 80px;
     display: inline-block;
     border-style: solid;
-    border-color: ${props => props.checked ? "red" : "white"};
+    border-color: ${props => props.checked ? props.theme.secondary : props.theme.light};
 `
 
 
@@ -136,7 +136,7 @@ const PickerItem = styled.label `
       display: inline-block;
       padding: 0 0 0 0px;
       border-style: solid;
-      border-color: ${props => props.checked ? "red" : "white"};
+      border-color: ${props => props.checked ? props.theme.secondary : props.theme.light};
       position: relative;
       filter: ${props => props.checked ? "grayscale(0%)" : "grayscale(70%)"};;
       ${css`

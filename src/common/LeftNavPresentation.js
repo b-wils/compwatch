@@ -15,8 +15,8 @@ const LeftNav = ({sessionRecord}) => (
 const LeftNavDiv = styled.div `
 	width: ${NAV_WIDTH};
 	min-height: 100%;
-	background-color: black;
-	color: white;
+	background-color: ${props => props.theme.primary};
+	color: ${props => props.theme.light};
 	position: fixed;
 `
 

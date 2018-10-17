@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
-
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
+import {ThemeProvider} from 'styled-components'
 
 import AppRoute from './common/AppRoute'
 // import './App.css';
@@ -18,19 +18,21 @@ class App extends Component {
 
   render() {
     return (
-      <div style={{textAlign: 'center'}}>
-        {process.env.NODE_ENV === 'development' && <DevWarningDiv position="top"/>}
-        
-        <Router>
-          <Switch>
-            <Route path="/login" component={WrappedLoginPage}/>
-            <AppRoute path="/addmatch" component={MatchEntry} />
-            <Route exact path="/" component={WelcomePage}/>
-          </Switch>
-        </Router>
+      <ThemeProvider theme={monochromaticTheme}>
+        <div style={{textAlign: 'center'}}>
+          {process.env.NODE_ENV === 'development' && <DevWarningDiv position="top"/>}
+          
+          <Router>
+            <Switch>
+              <Route path="/login" component={WrappedLoginPage}/>
+              <AppRoute path="/addmatch" component={MatchEntry} />
+              <Route exact path="/" component={WelcomePage}/>
+            </Switch>
+          </Router>
 
-        {process.env.NODE_ENV === 'development' && <DevWarningDiv position="bottom"/>}
-      </div>
+          {process.env.NODE_ENV === 'development' && <DevWarningDiv position="bottom"/>}
+        </div>
+      </ThemeProvider>
     );
 
   }
@@ -74,6 +76,14 @@ const DevWarningDiv = ({position}) => {
       console.log('warning dev div with no position')
   }
   return <div style={style}>DEVELOPMENT BUILD</div>
+}
+
+const monochromaticTheme = {
+  primary: '#333333',
+  secondary: '#666666',
+  light: '#ffffff',
+  mid: '#999999',
+  dark: '#000000'
 }
 
 App.propTypes = {
