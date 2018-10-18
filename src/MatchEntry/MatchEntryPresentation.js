@@ -25,7 +25,6 @@ class MatchEntryPresentation extends Component {
           <div style={{width: '100%'}}>
             Current SR: <input type="number" pattern="[0-9]*" name="currentSR" value={this.props.currentSR} onChange={this.props.currentSRChange} autoComplete="off"/>
             New SR: <input type="number" pattern="[0-9]*" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput} autoComplete="off"/>
-            SR Change: {this.props.SRDiff}
             <ResultRadio currentResult={this.props.result} onChange={this.props.resultSelectChange} />
           </div>
 
@@ -135,10 +134,12 @@ const PickerItem = styled.label `
       width: 101px;
       display: inline-block;
       padding: 0 0 0 0px;
+      border-width: 3px;
       border-style: solid;
-      border-color: ${props => props.checked ? props.theme.secondary : props.theme.light};
+      border-color: ${props => !props.checked ? props.theme.primary : props.theme.light};
       position: relative;
-      filter: ${props => props.checked ? "grayscale(0%)" : "grayscale(70%)"};;
+      filter: ${props => props.checked ? "grayscale(0%)" : "grayscale(70%)"};
+      margin: 2px;
       ${css`
           &:hover {
             -webkit-filter: grayscale(0%); /* Safari 6.0 - 9.0 */

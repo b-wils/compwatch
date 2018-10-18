@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
-import {ThemeProvider} from 'styled-components'
+import styled, {css, ThemeProvider} from 'styled-components'
 
 import AppRoute from './common/AppRoute'
 // import './App.css';
@@ -19,8 +19,8 @@ class App extends Component {
   render() {
     return (
       <ThemeProvider theme={monochromaticTheme}>
-        <div style={{textAlign: 'center'}}>
-          {process.env.NODE_ENV === 'development' && <DevWarningDiv position="top"/>}
+        <MasterDiv>
+          {process.env.NODE_ENV === 'development' && !process.env.REACT_APP_HIDE_DEV_WARNING && <DevWarningDiv position="top"/>}
           
           <Router>
             <Switch>
@@ -30,8 +30,8 @@ class App extends Component {
             </Switch>
           </Router>
 
-          {process.env.NODE_ENV === 'development' && <DevWarningDiv position="bottom"/>}
-        </div>
+          {process.env.NODE_ENV === 'development' && !process.env.REACT_APP_HIDE_DEV_WARNING && <DevWarningDiv position="bottom"/>}
+        </MasterDiv>
       </ThemeProvider>
     );
 
@@ -78,9 +78,23 @@ const DevWarningDiv = ({position}) => {
   return <div style={style}>DEVELOPMENT BUILD</div>
 }
 
+const MasterDiv = styled.div `
+  text-align: center;
+  background-color: ${props => props.theme.mid};
+`
+
 const monochromaticTheme = {
   primary: '#333333',
   secondary: '#666666',
+  light: '#ffffff',
+  mid: '#999999',
+  dark: '#000000'
+}
+
+// http://paletton.com/#uid=23P0u0kmlhN53nGdZkFwaeqS1cp
+const blueOrangeTheme = {
+  primary: '#09254E',
+  secondary: '#CE8C17',
   light: '#ffffff',
   mid: '#999999',
   dark: '#000000'
