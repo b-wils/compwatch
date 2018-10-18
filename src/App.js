@@ -4,7 +4,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
-import styled, {css, ThemeProvider} from 'styled-components'
+import styled from 'styled-components/macro';
+import {css, ThemeProvider} from 'styled-components'
 
 import AppRoute from './common/AppRoute'
 // import './App.css';

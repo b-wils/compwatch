@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import styled, {css} from 'styled-components';
+import styled from 'styled-components/macro';
+import {css} from 'styled-components';
 
 const HeaderHeight = '150px'
 
