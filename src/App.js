@@ -10,6 +10,7 @@ import {css, ThemeProvider} from 'styled-components'
 import AppRoute from './common/AppRoute'
 // import './App.css';
 import MatchEntry from './MatchEntry/MatchEntryContainer'
+import MatchHistory from './MatchHistory/MatchHistoryContainer'
 
 
 class App extends Component {
@@ -27,6 +28,7 @@ class App extends Component {
             <Switch>
               <Route path="/login" component={WrappedLoginPage}/>
               <AppRoute path="/addmatch" component={MatchEntry} />
+              <AppRoute path="/matches" component={MatchHistory} />
               <Route exact path="/" component={WelcomePage}/>
             </Switch>
           </Router>
