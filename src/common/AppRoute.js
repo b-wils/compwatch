@@ -3,7 +3,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
-import styled, {css} from 'styled-components';
+import styled from 'styled-components/macro';
+import {css} from 'styled-components';
 
 import Header from './Header'
 import LeftNav from './LeftNavContainer'
@@ -21,7 +22,6 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 			          ? <span>Please <Link to="/login">login</Link> to continue</span>
 			          : <div>
 			          		<Component {...props} />
-			          		<button onClick={() => firebase.logout({ provider: 'google', type: 'popup' })}> Logout </button>
 			          	</div>
 			  )}/>
 

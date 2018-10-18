@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import styled, {css} from 'styled-components';
 import styled from 'styled-components/macro';
 import {css} from 'styled-components';
 
@@ -136,7 +135,7 @@ const PickerItem = styled.label `
       width: 101px;
       display: inline-block;
       padding: 0 0 0 0px;
-      border-width: 3px;
+      border-width: ${props => props.checked ? "2px" : "2px"};
       border-style: solid;
       border-color: ${props => !props.checked ? props.theme.primary : props.theme.light};
       position: relative;
