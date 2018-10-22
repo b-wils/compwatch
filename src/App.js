@@ -82,8 +82,7 @@ const DevWarningDiv = ({position}) => {
 }
 
 const MasterDiv = styled.div `
-  text-align: center;
-  background-color: ${props => props.theme.mid};
+
 `
 
 const monochromaticTheme = {
