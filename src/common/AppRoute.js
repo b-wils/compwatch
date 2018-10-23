@@ -3,7 +3,8 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
-import styled, {css} from 'styled-components';
+import {css} from 'styled-components';
+import styled from 'styled-components/macro';
 import { Layout, Menu } from 'antd';
 
 const { Header, Footer, Sider, Content } = Layout;
@@ -19,6 +20,7 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 	return (
 		<Layout>
 		  	<Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0 }} >
+		  		<Header style={{color: 'rgba(255, 255, 255, 0.65)'}}> Overlogger </Header>
 		  		<Menu theme='dark'>
 		  		
 		  			<Menu.Item>
@@ -36,10 +38,10 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 		  		</Menu>
 		  	</Sider>
 		  	<Layout style={{ marginLeft: 200 }}>
-			  	<Header style={{ background: '#fff', padding: 0 }}>
+			  	<Header style={{ background: '#fff' }}>
 			  		Overlogger
 			  	</Header>
-	 			<Content>
+	 			<ContentContainer>
 				  <Route {...rest} render={(props) => (
 				        !isLoaded(auth)
 				        ? <span>Loading...</span>
@@ -50,15 +52,15 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 				          	</div>
 				  )}/>
 
-			  	</Content> 
+			  	</ContentContainer> 
 		  	</Layout>
 		</Layout>
 	)
 }
 
-// const Content = styled.div `
-// 	padding: 32px;
-// `
+const ContentContainer = styled(Content) `
+	padding: 32px;
+`
 
 export default compose(
   firebaseConnect(), // withFirebase can also be used

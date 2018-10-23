@@ -22,7 +22,7 @@ class App extends Component {
     return (
       <ThemeProvider theme={monochromaticTheme}>
         <MasterDiv>
-          {process.env.NODE_ENV === 'development' && !process.env.REACT_APP_HIDE_DEV_WARNING && <DevWarningDiv position="top"/>}
+          {process.env.NODE_ENV === 'development' && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="top"/>}
           
           <Router>
             <Switch>
@@ -33,7 +33,7 @@ class App extends Component {
             </Switch>
           </Router>
 
-          {process.env.NODE_ENV === 'development' && !process.env.REACT_APP_HIDE_DEV_WARNING && <DevWarningDiv position="bottom"/>}
+          {process.env.NODE_ENV === 'development' && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="bottom"/>}
         </MasterDiv>
       </ThemeProvider>
     );

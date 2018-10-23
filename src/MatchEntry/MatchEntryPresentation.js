@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/macro';
 import {css} from 'styled-components';
+import {InputNumber} from 'antd';
 
 class MatchEntryPresentation extends Component {
 
@@ -24,8 +25,8 @@ class MatchEntryPresentation extends Component {
         {this.props.message ? <div> {this.props.message}</div> : null}
         <FlexContainer onSubmit={this.handleSubmit}>
           <div style={{width: '100%'}}>
-            Current SR: <input type="number" pattern="[0-9]*" name="currentSR" value={this.props.currentSR} onChange={this.props.currentSRChange} autoComplete="off"/>
-            New SR: <input type="number" pattern="[0-9]*" name="newSR" value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput} autoComplete="off"/>
+            Current SR: <InputNumber value={this.props.currentSR} onChange={this.props.currentSRChange}/>
+            New SR: <InputNumber value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput}/>
             <ResultRadio currentResult={this.props.result} onChange={this.props.resultSelectChange} />
           </div>
 
@@ -118,8 +119,9 @@ const ResultLabel = styled.label `
     height: 30px;
     width: 80px;
     display: inline-block;
+    border-width: 2px;
     border-style: solid;
-    border-color: ${props => props.checked ? props.theme.secondary : props.theme.light};
+    border-color: ${props => props.checked ? props.theme.primary : props.theme.mid};
 `
 
 
@@ -135,9 +137,9 @@ const PickerItem = styled.label `
       width: 101px;
       display: inline-block;
       padding: 0 0 0 0px;
-      border-width: ${props => props.checked ? "2px" : "2px"};
+      border-width: ${props => props.checked ? "3px" : "3px"};
       border-style: solid;
-      border-color: ${props => !props.checked ? props.theme.primary : props.theme.light};
+      border-color: ${props => props.checked ? props.theme.primary : props.theme.mid};
       position: relative;
       filter: ${props => props.checked ? "grayscale(0%)" : "grayscale(70%)"};
       margin: 2px;

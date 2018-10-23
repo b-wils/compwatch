@@ -51,29 +51,16 @@ class MatchEntryContainer extends Component {
   }
 
 
-  newSRChange(event) {
-    var newSR = event.target.value;
-
-    if (newSR !== '') {
-      newSR = parseInt(newSR, 10)
-    }
-
+  newSRChange(value) {
     this.setState({
-      newSR: newSR,
+      newSR: value,
       message: ""
     }, () => this.updateResults())
-
   }
 
-  currentSRChange(event) {
-    var currentSR = event.target.value;
-
-    if (currentSR !== '') {
-      currentSR = parseInt(currentSR, 10)
-    }
-
+  currentSRChange(value) {
     this.setState({
-      currentSR: currentSR,
+      currentSR: value,
       message: ""
     }, () => this.updateResults())
   }
@@ -115,13 +102,15 @@ class MatchEntryContainer extends Component {
 
   updateResults() {
 
+    console.log('update results')
+
     var {newSR, currentSR} = this.state;
 
     var SRDiff = newSR - currentSR;
 
     // Large SR changes typically mean the user is typing and we shouldn't update prematurely
     // Not sure if this is a good solution
-    if (Math.abs(SRDiff) > MAXIMUM_SR_DIFFERENCE_UPDATE) {
+    if (Math.abs(SRDiff) > MAXIMUM_SR_DIFFERENCE_UPDATE || newSR === undefined || currentSR === undefined) {
       return;
     }
 
