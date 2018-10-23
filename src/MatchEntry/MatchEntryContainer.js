@@ -196,21 +196,21 @@ class MatchEntryContainer extends Component {
 
   }
 
-  componentDidMount() {
-    const { firestore } = this.context.store;
-    const userId = this.props.auth.uid;
+//   componentDidMount() {
+//     const { firestore } = this.context.store;
+//     const userId = this.props.auth.uid;
 
-    firestore.get('heroes');
-    firestore.get('maps');
-    firestore.get('globals');
-    firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']})
-        .then(()=>{
-          this.setState({currentSR: this.props.lastSR})
-        });
+//     firestore.get('heroes');
+//     firestore.get('maps');
+//     firestore.get('globals');
+//     firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']})
+//         .then(()=>{
+//           this.setState({currentSR: this.props.lastSR})
+//         });
 
 
-    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
-  }
+//     firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
+//   }
 }
 
 const mapStateToProps = (state, ownProps = {}) => {

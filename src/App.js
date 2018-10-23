@@ -11,7 +11,7 @@ import AppRoute from './common/AppRoute'
 // import './App.css';
 import MatchEntry from './MatchEntry/MatchEntryContainer'
 import MatchHistory from './MatchHistory/MatchHistoryContainer'
-
+import MatchDetails from './MatchDetails/MatchDetailsContainer'
 
 class App extends Component {
   static contextTypes = {
@@ -26,9 +26,12 @@ class App extends Component {
           
           <Router>
             <Switch>
-              <Route path="/login" component={WrappedLoginPage}/>
+              
               <AppRoute path="/addmatch" component={MatchEntry} />
-              <AppRoute path="/matches" component={MatchHistory} />
+              <AppRoute exact path="/matches" component={MatchHistory} />
+              <AppRoute path="/matches/:matchId" component={MatchDetails} />
+
+              <Route path="/login" component={WrappedLoginPage}/>
               <Route exact path="/" component={WelcomePage}/>
             </Switch>
           </Router>

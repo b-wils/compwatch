@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
@@ -24,13 +25,13 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 		  		<Menu theme='dark'>
 		  		
 		  			<Menu.Item>
-		  				<Link to='addmatch'>Add Match</Link>
+		  				<Link to='/addmatch'>Add Match</Link>
 		  			</Menu.Item>
 		  			<Menu.Item>
-		  				<Link to='matches'>Match History</Link>
+		  				<Link to='/matches'>Match History</Link>
 		  			</Menu.Item>
 		  			<Menu.Item>
-		  				<Link to='dashboard'>Dashboard</Link>
+		  				<Link to='/dashboard'>Dashboard</Link>
 		  			</Menu.Item>
 		  			<Menu.Item onClick={() => firebase.logout()}>
 		  				Logout
@@ -47,9 +48,9 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 				        ? <span>Loading...</span>
 				        : isEmpty(auth)
 				          ? <span>Please <Link to="/login">login</Link> to continue</span>
-				          : <div>
+				          : <WrappedGlobalLoader>
 				          		<Component {...props} />
-				          	</div>
+				          	</WrappedGlobalLoader>
 				  )}/>
 
 			  	</ContentContainer> 
@@ -57,6 +58,42 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 		</Layout>
 	)
 }
+
+class GlobalLoader extends Component {
+  render() {
+    return (<div>{this.props.children}</div>)
+  }
+
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  }
+
+  componentDidMount() {
+    const { firestore } = this.context.store;
+    const userId = this.props.auth.uid;
+
+    firestore.get('heroes');
+    firestore.get('maps');
+    firestore.get('globals');
+
+    // TODO it's probably a bit costly to load all games when not all pages need them
+    // TODO only load this season
+    firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']})
+        .then(()=>{
+          this.setState({currentSR: this.props.lastSR})
+        });
+
+
+    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
+  }
+}
+
+const WrappedGlobalLoader = compose(
+  firebaseConnect(), // withFirebase can also be used
+  connect(({ firebase: { auth } }) => ({ auth }))
+)(GlobalLoader)
+
+// const WrappedGlobalLoader = firebaseConnect()(GlobalLoader)
 
 const ContentContainer = styled(Content) `
 	padding: 32px;
