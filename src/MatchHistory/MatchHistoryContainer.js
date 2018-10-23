@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import {getMathcesSortedByRecent} from '../redux/selectors'
-// import MatchHistoryPresentation from './MatchHistoryPresentation'
+import MatchHistoryPresentation from './MatchHistoryPresentation'
 
 class MatchHistoryContainer extends Component {
   static contextTypes = {
@@ -12,10 +12,7 @@ class MatchHistoryContainer extends Component {
   }
 
   render() {
-    console.log(this.props.matches)
-    return (<div>
-        Match History!
-      </div>)
+    return (<MatchHistoryPresentation matches={this.props.matches}/>)
   }
 
   componentDidMount() {
