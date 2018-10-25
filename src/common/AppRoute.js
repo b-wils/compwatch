@@ -61,7 +61,10 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 
 class GlobalLoader extends Component {
   render() {
-    return (<div>{this.props.children}</div>)
+    return (<div>{this.props.isStateLoaded
+        			 ? this.props.children
+        			 : 'Loading....'}
+    		</div>)
   }
 
   static contextTypes = {
@@ -78,19 +81,24 @@ class GlobalLoader extends Component {
 
     // TODO it's probably a bit costly to load all games when not all pages need them
     // TODO only load this season
-    firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']})
-        .then(()=>{
-          this.setState({currentSR: this.props.lastSR})
-        });
-
+    firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']});
 
     firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
   }
 }
 
+const mapGlobalStateToProps = (state) => {
+
+	const initialData = ['heroes', 'matches', 'maps', 'globals']; 
+
+	var isStateLoaded = initialData.every((collection) => isLoaded(state.firestore.data[collection]))
+
+	return {auth:state.firebase.auth, isStateLoaded:isStateLoaded}
+}
+
 const WrappedGlobalLoader = compose(
   firebaseConnect(), // withFirebase can also be used
-  connect(({ firebase: { auth } }) => ({ auth }))
+  connect(mapGlobalStateToProps)
 )(GlobalLoader)
 
 // const WrappedGlobalLoader = firebaseConnect()(GlobalLoader)
