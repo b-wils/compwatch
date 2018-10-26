@@ -41,7 +41,6 @@ class MatchEntryContainer extends Component {
       message: ""
     });
 
-    this.props.onChange(localMatch);
     this.updateResults(localMatch)
   }
 
@@ -51,9 +50,7 @@ class MatchEntryContainer extends Component {
       message: ""
     });
 
-    this.props.onChange(localMatch);
     this.updateResults(localMatch)
-
   }
 
   resultSelectChange = (event) => {
@@ -93,9 +90,9 @@ class MatchEntryContainer extends Component {
     this.props.onChange(localMatch);
   }
 
-  updateResults = () => {
+  updateResults = (localMatch) => {
 
-    var {newSR, currentSR} = this.props.match;
+    var {newSR, currentSR} = localMatch;
 
     var SRDiff = newSR - currentSR;
 
