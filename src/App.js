@@ -47,7 +47,7 @@ class App extends Component {
 
 const WelcomePage = () => {
   return (
-      <div>
+      <div style={{margin:'30px'}}>
         Welcome to Overlogger!
         <Link to="/login"> Login </Link>
       </div>
@@ -59,7 +59,7 @@ const LoginPage = ({firebase,auth}) => (
         !isLoaded(auth)
         ? <span>Loading...</span>
         : isEmpty(auth)
-          ? <div>
+          ? <div style={{margin:'30px'}}>
               <button onClick={() => firebase.login({ provider: 'google', type: 'popup' })}>
                 Login With Google
               </button>
