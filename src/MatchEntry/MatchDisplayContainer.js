@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
+import clone from 'lodash.clonedeep'
+
 import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from '../redux/selectors'
 import MatchDisplayPresentation from './MatchDisplayPresentation'
 
@@ -36,7 +38,9 @@ class MatchEntryContainer extends Component {
 
   newSRChange = (value) => {
 
-    var localMatch = Object.assign(this.props.match, {
+    var localMatch = clone(this.props.match)
+
+    Object.assign(localMatch, {
       newSR: value,
       message: ""
     });
@@ -45,7 +49,9 @@ class MatchEntryContainer extends Component {
   }
 
   currentSRChange = (value) => {
-    var localMatch = Object.assign(this.props.match, {
+    var localMatch = clone(this.props.match)
+
+    Object.assign(localMatch, {
       currentSR: value,
       message: ""
     });
@@ -60,32 +66,38 @@ class MatchEntryContainer extends Component {
     const target = event.target;
     const name = target.name.toLowerCase();
 
+    var updates = {}
+
     switch (name) {
       case 'win':
-        var localMatch = Object.assign(this.props.match, {
+        updates = {
           result: 'win',
           SRDiff: DEFAULT_SR_CHANGE,
           newSR: currentSR + DEFAULT_SR_CHANGE
-        })
+        }
         break;
       case 'draw':
-        var localMatch = Object.assign(this.props.match, {
+        updates = {
           result: 'draw',
           SRDiff: 0,
           newSR: currentSR
-        })
+        }
         break;
       case 'loss':
-        var localMatch = Object.assign(this.props.match, {
+        updates = {
           result: 'loss',
           SRDiff: -DEFAULT_SR_CHANGE,
           newSR: currentSR - DEFAULT_SR_CHANGE
-        })
+        }
         break;
       default:
         console.log('warning unknown result')
         break;
     }
+
+    var localMatch = clone(this.props.match)
+
+    Object.assign(localMatch, updates);
 
     this.props.onChange(localMatch);
   }
@@ -117,7 +129,9 @@ class MatchEntryContainer extends Component {
       result = 'draw'
     }
 
-    var localMatch = Object.assign(this.props.match, {
+    var localMatch = clone(this.props.match)
+
+    Object.assign(localMatch, {
       SRDiff: SRDiff,
       result: result
     })
@@ -130,11 +144,13 @@ class MatchEntryContainer extends Component {
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
-    var newSelectedHeroes = this.props.match.selectedHeroes;
+    var localMatch = clone(this.props.match)
+
+    var newSelectedHeroes = localMatch.selectedHeroes;
 
     newSelectedHeroes[name] = value
 
-    var localMatch = Object.assign(this.props.match, {
+    Object.assign(localMatch, {
       selectedHeroes: newSelectedHeroes,
       message: ""
     });
@@ -145,7 +161,9 @@ class MatchEntryContainer extends Component {
     const target = event.target;
     const name = target.name;
 
-    var localMatch = Object.assign(this.props.match, {
+    var localMatch = clone(this.props.match)
+
+    Object.assign(localMatch, {
       selectedMap: name,
       message: ""
     });

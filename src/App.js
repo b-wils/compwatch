@@ -11,7 +11,7 @@ import AppRoute from './common/AppRoute'
 // import './App.css';
 import MatchEntry from './MatchEntry/MatchEntryContainer'
 import MatchHistory from './MatchHistory/MatchHistoryContainer'
-import MatchDetails from './MatchDetails/MatchDetailsContainer'
+import MatchDetails from './MatchEntry/MatchDetailsContainer'
 
 class App extends Component {
   static contextTypes = {

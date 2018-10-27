@@ -69,6 +69,8 @@ class MatchEntryContainer2 extends Component {
   }
 
   handleMatchChange = (match) => {
+    console.log(match)
+    console.log(this.state)
     this.setState(match);
   }
 
