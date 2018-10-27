@@ -22,8 +22,8 @@ class MatchEntryPresentation extends Component {
   render() {
     return (
       <div className="MatchEntry">
-        {this.props.message ? <div> {this.props.message}</div> : null}
-        <FlexContainer onSubmit={this.handleSubmit}>
+        
+        <FlexContainer>
           <div style={{width: '100%'}}>
             Current SR: <InputNumber value={this.props.currentSR} onChange={this.props.currentSRChange}/>
             New SR: <InputNumber value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput}/>
@@ -66,7 +66,7 @@ class MatchEntryPresentation extends Component {
           }
           </div>
 
-           <div style={{width: '100%'}}><input type="submit" value="Submit" /></div> 
+          
         </FlexContainer>
       </div>
     );
@@ -125,7 +125,7 @@ const ResultLabel = styled.label `
 `
 
 
-const FlexContainer = styled.form `
+const FlexContainer = styled.div `
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

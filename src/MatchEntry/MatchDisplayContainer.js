@@ -24,7 +24,6 @@ class MatchEntryContainer extends Component {
       ...this.props.match,
       sortedHeroes: this.props.sortedHeroes,
       sortedMaps: this.props.sortedMaps,
-      handleSubmit: this.props.handleSubmit,
       newSRChange: this.newSRChange,
       currentSRChange: this.currentSRChange,
       heroSelectChange: this.heroSelectChange,
@@ -129,8 +128,6 @@ class MatchEntryContainer extends Component {
       result = 'draw'
     }
 
-    var localMatch = clone(this.props.match)
-
     Object.assign(localMatch, {
       SRDiff: SRDiff,
       result: result
@@ -174,11 +171,8 @@ class MatchEntryContainer extends Component {
 
 const mapStateToProps = (state, ownProps = {}) => {
   return {
-    // auth: state.firebase.auth,
     sortedHeroes: sortedHeroesSelector(state),
     sortedMaps: sortedMapsSelector(state),
-    // season: currentSeasonSelector(state),
-    // lastSR: getCurrentSRSelector(state)
   };
 }
 

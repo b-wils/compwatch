@@ -6,12 +6,6 @@ import { firebaseConnect } from 'react-redux-firebase'
 import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from '../redux/selectors'
 import MatchDisplayContainer from './MatchDisplayContainer'
 
-
-const DEFAULT_SR_CHANGE = 25;
-// const MINIMUM_SR_UPDATE = 500;
-// const MAXIMUM_SR_UPDATE = 6000;
-const MAXIMUM_SR_DIFFERENCE_UPDATE = 200;
-
 class MatchEntryContainer2 extends Component {
   static contextTypes = {
     store: PropTypes.object.isRequired
@@ -20,17 +14,23 @@ class MatchEntryContainer2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newSR: "",
-      selectedHeroes: {},
-      selectedMap: null,
-      message: "",
-      currentSR: this.props.lastSR
+      match: {
+        newSR: "",
+        selectedHeroes: {},
+        selectedMap: null,
+        currentSR: this.props.lastSR
+      },
+      message: ''
     }
 
   }
 
   render() {
-    return(<MatchDisplayContainer onChange={this.handleMatchChange} match={this.state} handleSubmit={this.handleSubmit}/>);
+    return(<form onSubmit={this.handleSubmit}>
+            {this.state.message ? <div> {this.state.message}</div> : null}
+            <MatchDisplayContainer onChange={this.handleMatchChange} match={this.state.match}/>
+             <div style={{width: '100%'}}><input type="submit" value="Submit" /></div> 
+           </form>);
   }
 
   handleSubmit = (event) => {
@@ -38,7 +38,7 @@ class MatchEntryContainer2 extends Component {
     event.preventDefault();
 
     var firestore = this.context.store.firestore
-    var {selectedHeroes, selectedMap, newSR, currentSR, result} = this.state;
+    var {selectedHeroes, selectedMap, newSR, currentSR, result} = this.state.match;
 
     var newMatch = {
       heroes: Object.keys(selectedHeroes).filter((key) => {return selectedHeroes[key] !== false;  }),
@@ -57,21 +57,22 @@ class MatchEntryContainer2 extends Component {
     firestore.add({collection: 'matches'}, newMatch)
 
     this.setState({
-      newSR: "",
-      selectedHeroes: {},
-      selectedMap: null,
-      message: "Match submitted",
-      currentSR: newSR,
-      result: '',
-      SRDiff: null
+      match: {
+        newSR: "",
+        selectedHeroes: {},
+        selectedMap: null,
+        
+        currentSR: newSR,
+        result: '',
+        SRDiff: null
+      },
+      message: "Match submitted"
     })
 
   }
 
   handleMatchChange = (match) => {
-    console.log(match)
-    console.log(this.state)
-    this.setState(match);
+    this.setState({match:match, message: ""});
   }
 
 }

@@ -3,14 +3,8 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
-import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector, getCurrentSRSelector} from '../redux/selectors'
+import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector} from '../redux/selectors'
 import MatchDisplayContainer from './MatchDisplayContainer'
-
-
-const DEFAULT_SR_CHANGE = 25;
-// const MINIMUM_SR_UPDATE = 500;
-// const MAXIMUM_SR_UPDATE = 6000;
-const MAXIMUM_SR_DIFFERENCE_UPDATE = 200;
 
 class MatchDetailsContainer extends Component {
   static contextTypes = {
@@ -39,12 +33,14 @@ class MatchDetailsContainer extends Component {
   }
 
   render() {
-    return(<MatchDisplayContainer onChange={this.handleMatchChange} match={this.state.currentMatch} handleSubmit={this.handleSubmit}/>);
+    return(<form onSubmit={this.handleSubmit}>
+            {this.state.message ? <div> {this.state.message}</div> : null}
+            <MatchDisplayContainer onChange={this.handleMatchChange} match={this.state.currentMatch}/>
+             <div style={{width: '100%'}}><input type="submit" value="Submit" /></div> 
+           </form>);
   }
 
   handleSubmit = (event) => {
-
-// console.log(this.state.currentMatch)
 
     event.preventDefault();
 
@@ -52,17 +48,17 @@ class MatchDetailsContainer extends Component {
 
     let {selectedHeroes, selectedMap, ...matchUpdate} = this.state.currentMatch;
 
-    
-
     matchUpdate.heroes = Object.keys(selectedHeroes).filter((key) => {return selectedHeroes[key] !== false;  });
     matchUpdate.map = selectedMap;
 
     firestore.update({collection: 'matches', doc:this.props.matchId}, matchUpdate)
 
+    this.setState({message:'Match Submitted'})
+
   }
 
   handleMatchChange = (match) => {
-    this.setState({currentMatch: match});
+    this.setState({currentMatch: match, message: ""} );
   }
 
 }
