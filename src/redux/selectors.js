@@ -7,6 +7,7 @@ const TIME_BETWEEN_SESSION_MATCHES_MINUTES = 60
 
 const heroesSelector = state => state.firestore.ordered.heroes || [];
 const mapsSelector = state => state.firestore.ordered.maps || [];
+const mapsObjectSelector = state => state.firestore.data.maps || {};
 const globalsSelector = state => state.firestore.data.globals || {};
 const matchesSelector = state => state.firestore.ordered.matches || [];
 
@@ -99,6 +100,95 @@ export const getCurrentSessionMatches = createSelector(
 
 		return sessionMatches;
 	} 
+)
+
+export const getMatchesGroupedByMap = createSelector(
+	matchesSelector, mapsSelector,
+	(matches, maps) => {
+
+		var matchesByMap = maps.reduce((acc, map)=> {
+			acc[map.name] = [];
+
+			return acc;
+		}, {}) 
+
+		matches.forEach((match) => {
+			if (match.map === null) {
+				return;
+			}
+
+			matchesByMap[match.map].push(match);
+		})
+
+		return matchesByMap;
+	}
+)
+
+export const getRecordByMap = createSelector(
+	getMatchesGroupedByMap, mapsObjectSelector,
+	(matchesByMap, mapsObject) => {
+		var winRates = {}
+
+		Object.keys(matchesByMap).forEach((map) => {
+			var data = {
+				win: 0,
+				loss: 0,
+				draw: 0,
+				key: map,
+				type: mapsObject[map].type
+
+			}
+
+			matchesByMap[map].forEach((match) => {
+
+				if (!match.result) {
+					return;
+				}
+
+				data[match.result] += 1;
+			})
+
+			data.total = data.win + data.loss + data.draw;
+
+			if (data.total) {
+				data.winrate = (data.win + data.draw/2) / data.total;
+			} else {
+				data.winrate = undefined;
+			}
+
+			winRates[map] = data;
+		})
+
+		return winRates;
+	}
+)
+
+export const getUnsortedRecordByMap = createSelector(
+	getRecordByMap,
+	(recordByMap) => {
+		return Object.keys(recordByMap).map((key) => {
+			recordByMap[key].map = key;
+			return recordByMap[key];
+		})
+	}
+)
+
+export const getSortedRecordByMap = createSelector(
+	getUnsortedRecordByMap,
+	(unsortedRecordByMap) => {
+
+		return unsortedRecordByMap.sort((a,b)=>{
+			if (a.winrate === b.winrate) {
+				return a.map.localeCompare(b.map)
+			} else if (a.winrate === undefined) {
+				return 1;
+			} else if (b.winrate === undefined) {
+				return -1
+			} else {
+				return b.winrate - a.winrate
+			}
+		})
+	}
 )
 
 export const getCurrentSessionRecord = createSelector(
