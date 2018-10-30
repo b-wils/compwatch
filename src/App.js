@@ -6,6 +6,7 @@ import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
 import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
 import styled from 'styled-components/macro';
 import {css, ThemeProvider} from 'styled-components'
+import {Helmet} from "react-helmet";
 
 import AppRoute from './common/AppRoute'
 // import './App.css';
@@ -20,10 +21,16 @@ class App extends Component {
   }
 
   render() {
+    var isDev = process.env.NODE_ENV === 'development';
+
     return (
       <ThemeProvider theme={monochromaticTheme}>
         <MasterDiv>
-          {process.env.NODE_ENV === 'development' && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="top"/>}
+          <Helmet titleTemplate={isDev ? "%s | DEVELOPMENT" : "%s"}>
+            <title> Overlogger</title>
+          </Helmet>
+
+          {isDev && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="top"/>}
           
           <Router>
             <Switch>
@@ -38,7 +45,7 @@ class App extends Component {
             </Switch>
           </Router>
 
-          {process.env.NODE_ENV === 'development' && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="bottom"/>}
+          {isDev && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="bottom"/>}
         </MasterDiv>
       </ThemeProvider>
     );
