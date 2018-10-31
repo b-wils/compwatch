@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {Table} from 'antd'
 
-import {getMatchesGroupedByMap, getRecordByMap, getSortedRecordByMap} from '../redux/selectors'
+import {getMatchesGroupedByMap, getRecordByMapObject, getSortedRecordByMapArray} from '../redux/selectors'
 
 const columns = [{
   title: 'Map',
@@ -28,8 +28,8 @@ const DashboardContainer = ({sortedRecordByMap}) => {
 const mapStateToProps = (state) => {
   return {
     matchesByMap: getMatchesGroupedByMap(state),
-    winrateByMap: getRecordByMap(state),
-    sortedRecordByMap: getSortedRecordByMap(state)
+    winrateByMap: getRecordByMapObject(state),
+    sortedRecordByMap: getSortedRecordByMapArray(state)
   };
 }
 
