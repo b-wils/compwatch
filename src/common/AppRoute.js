@@ -31,7 +31,10 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 		  				<Link to='/matches'>Match History</Link>
 		  			</Menu.Item>
 		  			<Menu.Item>
-		  				<Link to='/dashboard'>Dashboard</Link>
+		  				<Link exact to='/dashboard'>Dashboard</Link>
+		  			</Menu.Item>
+		  			<Menu.Item>
+		  				<Link to='/dashboard/heroes'>Hero stats</Link>
 		  			</Menu.Item>
 		  			<Menu.Item onClick={() => firebase.logout()}>
 		  				Logout

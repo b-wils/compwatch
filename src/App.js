@@ -14,6 +14,7 @@ import MatchEntry from './MatchEntry/MatchEntryContainer'
 import MatchHistory from './MatchHistory/MatchHistoryContainer'
 import MatchDetails from './MatchEntry/MatchDetailsContainer'
 import Dashboard from './Dashboard/DashboardContainer'
+import HeroWinrate from './Dashboard/HeroWinrateContainer'
 
 class App extends Component {
   static contextTypes = {
@@ -39,6 +40,7 @@ class App extends Component {
               <AppRoute exact path="/matches" component={MatchHistory} />
               <AppRoute path="/matches/:matchId" component={MatchDetails} />
               <AppRoute exact path="/dashboard" component={Dashboard} />
+              <AppRoute exact path="/dashboard/heroes" component={HeroWinrate} />
 
               <Route path="/login" component={WrappedLoginPage}/>
               <Route exact path="/" component={WelcomePage}/>
