@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components/macro';
 import {css} from 'styled-components';
-import {InputNumber} from 'antd';
+import {InputNumber, Switch} from 'antd';
 
 class MatchEntryPresentation extends Component {
 
@@ -25,6 +25,7 @@ class MatchEntryPresentation extends Component {
         
         <FlexContainer>
           <div style={{width: '100%'}}>
+            <span> Placement Match: <Switch defaultChecked={this.props.placementMatch} /> </span>
             Current SR: <InputNumber value={this.props.currentSR} onChange={this.props.currentSRChange}/>
             New SR: <InputNumber value={this.props.newSR} onChange={this.props.newSRChange} autoFocus={true} ref={this.textInput}/>
             <ResultRadio currentResult={this.props.result} onChange={this.props.resultSelectChange} />

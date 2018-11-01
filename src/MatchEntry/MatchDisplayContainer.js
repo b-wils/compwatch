@@ -60,38 +60,43 @@ class MatchEntryContainer extends Component {
 
   resultSelectChange = (event) => {
 
-    var {currentSR} = this.props.match;
+    var {currentSR, placementMatch} = this.props.match;
 
     const target = event.target;
     const name = target.name.toLowerCase();
 
     var updates = {}
 
-    switch (name) {
-      case 'win':
-        updates = {
-          result: 'win',
-          SRDiff: DEFAULT_SR_CHANGE,
-          newSR: currentSR + DEFAULT_SR_CHANGE
+
+    if (placementMatch) {
+      updates = {result : name}
+    } else {
+        switch (name) {
+          case 'win':
+            updates = {
+              result: 'win',
+              SRDiff: DEFAULT_SR_CHANGE,
+              newSR: currentSR + DEFAULT_SR_CHANGE
+            }
+            break;
+          case 'draw':
+            updates = {
+              result: 'draw',
+              SRDiff: 0,
+              newSR: currentSR
+            }
+            break;
+          case 'loss':
+            updates = {
+              result: 'loss',
+              SRDiff: -DEFAULT_SR_CHANGE,
+              newSR: currentSR - DEFAULT_SR_CHANGE
+            }
+            break;
+          default:
+            console.log('warning unknown result')
+            break;
         }
-        break;
-      case 'draw':
-        updates = {
-          result: 'draw',
-          SRDiff: 0,
-          newSR: currentSR
-        }
-        break;
-      case 'loss':
-        updates = {
-          result: 'loss',
-          SRDiff: -DEFAULT_SR_CHANGE,
-          newSR: currentSR - DEFAULT_SR_CHANGE
-        }
-        break;
-      default:
-        console.log('warning unknown result')
-        break;
     }
 
     var localMatch = clone(this.props.match)
@@ -103,7 +108,12 @@ class MatchEntryContainer extends Component {
 
   updateResults = (localMatch) => {
 
-    var {newSR, currentSR} = localMatch;
+    var {newSR, currentSR, placementMatch} = localMatch;
+
+    if (placementMatch) {
+      this.props.onChange(localMatch);
+      return;
+    }
 
     var SRDiff = newSR - currentSR;
 

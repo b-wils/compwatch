@@ -10,7 +10,8 @@ const columns = [{
   key: 'map'
 }, {
   title: 'Winrate',
-  dataIndex: 'winrate'
+  dataIndex: 'winrate',
+  render: (val) => (val ? (val *100).toFixed(2) + '%' : 'No Data')
 },
 {
   title: 'Map Type',

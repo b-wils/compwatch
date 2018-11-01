@@ -19,7 +19,7 @@ const MatchHistoryPresentation = ({matches}) => (
 const MatchListItem = ({match}) => (
 	<List.Item>
 		<Link to={`/matches/${match.id}`}>
-			{format(match.localTime.toDate(), "ddd, MMM Do, h:mm A")} - {match.result} - {match.map} - {match.heroes.join(', ')} - {`${match.newSR} SR`}	
+			{format(match.localTime.toDate(), "ddd, MMM Do, h:mm A")} - {match.result} - {match.map} - {match.heroes.join(', ')} {match.newSR && `- ${match.newSR} SR`}	{match.placementMatch && '- Placement match'}
 		</Link>
 	</List.Item>
 )

@@ -8,9 +8,11 @@ import {css} from 'styled-components';
 import styled from 'styled-components/macro';
 import { Layout, Menu } from 'antd';
 
-const { Header, Footer, Sider, Content } = Layout;
+import {currentSeasonSelector} from '../redux/selectors'
 
+const { Header, Footer, Sider, Content } = Layout;
 const Item = {Menu}
+
 
 // import Header from './Header'
 // import LeftNav from './LeftNavContainer'
@@ -31,7 +33,7 @@ const AppRoute = ({ component: Component, auth, firebase, ...rest }) => {
 		  				<Link to='/matches'>Match History</Link>
 		  			</Menu.Item>
 		  			<Menu.Item>
-		  				<Link exact to='/dashboard'>Dashboard</Link>
+		  				<Link exact="true" to='/dashboard'>Dashboard</Link>
 		  			</Menu.Item>
 		  			<Menu.Item>
 		  				<Link to='/dashboard/heroes'>Hero stats</Link>
@@ -78,15 +80,29 @@ class GlobalLoader extends Component {
     const { firestore } = this.context.store;
     const userId = this.props.auth.uid;
 
+    firestore.get('globals').then(()=> {
+
+	    // TODO it's probably a bit costly to load all games when not all pages need them
+	    // TODO we need to wait get current season from the server which slows down when we can load this
+	    // 		Find way to make this async. 1) hardcode season 2) add collection for current season
+
+    	const matchesQuery = {
+    		collection: 'matches',
+    			where: [['userId', '==', userId],
+    					[ 'season', '==', this.props.season]],
+    			orderBy: ['firebaseTime', 'desc']}
+
+	    firestore.get(matchesQuery);
+	    firestore.setListener(matchesQuery)
+
+    });
+
     firestore.get('heroes');
     firestore.get('maps');
-    firestore.get('globals');
 
-    // TODO it's probably a bit costly to load all games when not all pages need them
-    // TODO only load this season
-    firestore.get({collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc']});
 
-    firestore.setListener({ collection: 'matches', where: ['userId', '==', userId], orderBy: ['firebaseTime', 'desc'] })
+
+
   }
 }
 
@@ -96,7 +112,7 @@ const mapGlobalStateToProps = (state) => {
 
 	var isStateLoaded = initialData.every((collection) => isLoaded(state.firestore.data[collection]))
 
-	return {auth:state.firebase.auth, isStateLoaded:isStateLoaded}
+	return {auth:state.firebase.auth, isStateLoaded:isStateLoaded, season:currentSeasonSelector(state)}
 }
 
 const WrappedGlobalLoader = compose(

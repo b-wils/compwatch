@@ -18,7 +18,8 @@ class MatchEntryContainer2 extends Component {
         newSR: "",
         selectedHeroes: {},
         selectedMap: null,
-        currentSR: this.props.lastSR
+        currentSR: this.props.lastSR,
+        placementMatch: this.props.lastSR ? false : true
       },
       message: ''
     }
@@ -38,20 +39,21 @@ class MatchEntryContainer2 extends Component {
     event.preventDefault();
 
     var firestore = this.context.store.firestore
-    var {selectedHeroes, selectedMap, newSR, currentSR, result} = this.state.match;
+    var {selectedHeroes, selectedMap, newSR, currentSR, result, placementMatch} = this.state.match;
 
     var newMatch = {
       heroes: Object.keys(selectedHeroes).filter((key) => {return selectedHeroes[key] !== false;  }),
       map: selectedMap,
       lastSR: this.props.lastSR,
       currentSR: currentSR,
-      newSR: newSR,
+      newSR: newSR || null,
       isCurrentSRChanged: (this.props.lastSR !== currentSR),
       userId: this.props.auth.uid,
       firebaseTime: firestore.FieldValue.serverTimestamp(),
       localTime: new Date(),
       result: result,
-      season: this.props.season
+      season: this.props.season,
+      placementMatch: placementMatch
     }
 
     firestore.add({collection: 'matches'}, newMatch)
@@ -64,7 +66,8 @@ class MatchEntryContainer2 extends Component {
         
         currentSR: newSR,
         result: '',
-        SRDiff: null
+        SRDiff: null,
+        placementMatch: newSR ? false : true
       },
       message: "Match submitted"
     })

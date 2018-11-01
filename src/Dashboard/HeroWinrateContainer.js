@@ -10,7 +10,8 @@ const columns = [{
   key: 'hero'
 }, {
   title: 'Winrate',
-  dataIndex: 'winrate'
+  dataIndex: 'winrate',
+  render: (val) => (val ? (val *100).toFixed(2) + '%' : 'No Data')
 },
 {
   title: 'Hero Role',

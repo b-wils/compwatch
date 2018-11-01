@@ -82,7 +82,7 @@ export const getMostRecentMatchSelector = createSelector(
 
 export const getCurrentSRSelector = createSelector(
 	getMostRecentMatchSelector,
-	match =>  get(match, "newSR", 0))
+	match =>  get(match, "newSR", null))
 
 // TODO since the selector will cache results based on input, it can give stale results if sufficient time has passed 
 export const getCurrentSessionMatches = createSelector(
