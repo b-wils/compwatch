@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect } from 'react-redux-firebase'
+import {Button} from 'antd'
+
 import {sortedMapsSelector, sortedHeroesSelector, currentSeasonSelector} from '../redux/selectors'
 import MatchDisplayContainer from './MatchDisplayContainer'
 
@@ -36,7 +38,7 @@ class MatchDetailsContainer extends Component {
     return(<form onSubmit={this.handleSubmit}>
             {this.state.message ? <div> {this.state.message}</div> : null}
             <MatchDisplayContainer onChange={this.handleMatchChange} match={this.state.currentMatch}/>
-             <div style={{width: '100%'}}><input type="submit" value="Submit" /></div> 
+             <div style={{width: '100%'}}><input type="submit" value="Submit" /><Button onClick={this.onDeleteMatch}>Delete </Button></div> 
            </form>);
   }
 
@@ -59,6 +61,12 @@ class MatchDetailsContainer extends Component {
 
   handleMatchChange = (match) => {
     this.setState({currentMatch: match, message: ""} );
+  }
+
+  onDeleteMatch = () => {
+    this.context.store.firestore.delete({collection: 'matches', doc:this.props.matchId})
+
+    this.setState({message:'Match Deleted'})
   }
 
 }

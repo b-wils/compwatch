@@ -60,11 +60,11 @@ class MatchEntryContainer2 extends Component {
 
     this.setState({
       match: {
-        newSR: "",
+        newSR: null,
+        lastSR: newSR,
         selectedHeroes: {},
         selectedMap: null,
-        
-        currentSR: newSR,
+        currentSR: newSR || null,
         result: '',
         SRDiff: null,
         placementMatch: newSR ? false : true
