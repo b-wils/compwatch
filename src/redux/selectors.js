@@ -1,7 +1,12 @@
 import { createSelector } from 'reselect';
 import get from 'lodash.get';
 // import differenceInMinutes from 'date-fns/difference_in_minutes';
+
+import getDay from 'date-fns/get_day'
+import getHours from 'date-fns/get_hours'
 var differenceInMinutes = require('date-fns/difference_in_minutes')
+
+
 
 const TIME_BETWEEN_SESSION_MATCHES_MINUTES = 60
 
@@ -11,6 +16,24 @@ const mapsSelector = state => state.firestore.ordered.maps || [];
 const mapsObjectSelector = state => state.firestore.data.maps || {};
 const globalsSelector = state => state.firestore.data.globals || {};
 const matchesSelector = state => state.firestore.ordered.matches || [];
+
+// TODO is there a better way to init this and have a selector for it?
+var daysObject = {}
+
+for (var i = 0; i <7; i++) {
+	daysObject[i] = {day:i};
+}
+
+const daysObjectSelector = state => daysObject
+
+var hoursObject = {}
+
+for (var i = 0; i <7; i++) {
+	hoursObject[i] = {hour:i};
+}
+
+const hoursObjectSelector = state => hoursObject
+
 
 // Global Selectors
 export const currentSeasonSelector = createSelector(
@@ -105,6 +128,7 @@ export const getCurrentSessionMatches = createSelector(
 	} 
 )
 
+// Utility function that will take a smap of objects and calculate win rates
 export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
 	return createSelector(
 		matchListSelector, mergeDataSelector,
@@ -147,6 +171,28 @@ export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
 	)
 }
 
+export const makeSortArrayByWinrate = (winrateSelector, secondaryField) => {
+	return createSelector(
+		winrateSelector,
+		(winrates) => {
+			console.log(winrates)
+
+			return winrates.sort((a,b)=>{
+				if (a.winrate === b.winrate) {
+					return a[secondaryField].localeCompare(b[secondaryField])
+				} else if (a.winrate === undefined) {
+					return 1;
+				} else if (b.winrate === undefined) {
+					return -1
+				} else {
+					return b.winrate - a.winrate
+				}
+			})
+		}
+
+	)
+} 
+
 // Matches by Map
 export const getMatchesGroupedByMap = createSelector(
 	matchesSelector, mapsSelector,
@@ -182,23 +228,7 @@ export const getUnsortedRecordByMapArray = createSelector(
 	}
 )
 
-export const getSortedRecordByMapArray = createSelector(
-	getUnsortedRecordByMapArray,
-	(unsortedRecordByMap) => {
-
-		return unsortedRecordByMap.sort((a,b)=>{
-			if (a.winrate === b.winrate) {
-				return a.map.localeCompare(b.map)
-			} else if (a.winrate === undefined) {
-				return 1;
-			} else if (b.winrate === undefined) {
-				return -1
-			} else {
-				return b.winrate - a.winrate
-			}
-		})
-	}
-)
+export const getSortedRecordByMapArray = makeSortArrayByWinrate(getUnsortedRecordByMapArray, 'map')
 
 // Matches by Hero
 export const getMatchesGroupedByHero = createSelector(
@@ -237,24 +267,85 @@ export const getUnsortedRecordByHeroArray = createSelector(
 	}
 )
 
-export const getSortedRecordByHeroArray = createSelector(
-	getUnsortedRecordByHeroArray,
-	(unsortedRecordByHero) => {
 
-		return unsortedRecordByHero.sort((a,b)=>{
-			if (a.winrate === b.winrate) {
-				return a.hero.localeCompare(b.hero)
-			} else if (a.winrate === undefined) {
-				return 1;
-			} else if (b.winrate === undefined) {
-				return -1
-			} else {
-				return b.winrate - a.winrate
+export const getSortedRecordByHeroArray = makeSortArrayByWinrate(getUnsortedRecordByHeroArray, 'hero')
+
+// Matches by day of week
+export const getMatchesGroupedByDay = createSelector(
+	matchesSelector, heroesSelector,
+	(matches, heroes) => {
+
+		var matchesByDay = {}
+
+		for (var i = 0; i<7; i++) {
+			matchesByDay[i] = [];
+		}
+
+		matches.forEach((match) => {
+			if (match.localTime === null) {
+				return;
 			}
+
+			matchesByDay[getDay(match.localTime.toDate())].push(match);
+		})
+
+		return matchesByDay;
+	}
+)
+
+export const getRecordByDayObject = makeGetRecordByArray(getMatchesGroupedByDay, daysObjectSelector);
+
+export const getUnsortedRecordByDayArray = createSelector(
+	getRecordByDayObject,
+	(recordByDay) => {
+		return Object.keys(recordByDay).map((key) => {
+			recordByDay[key].day = key;
+			return recordByDay[key];
 		})
 	}
 )
 
+export const getSortedRecordByDayArray = makeSortArrayByWinrate(getUnsortedRecordByDayArray, 'day')
+
+// Matches by hour of week
+export const getMatchesGroupedByHour = createSelector(
+	matchesSelector, heroesSelector,
+	(matches, heroes) => {
+
+		var matchesByHour = {}
+
+		for (var i = 0; i<24; i++) {
+			matchesByHour[i] = [];
+		}
+
+		matches.forEach((match) => {
+			if (match.localTime === null) {
+				return;
+			}
+
+			matchesByHour[getHours(match.localTime.toDate())].push(match);
+		})
+
+		return matchesByHour;
+	}
+)
+
+export const getRecordByHourObject = makeGetRecordByArray(getMatchesGroupedByHour, hoursObjectSelector);
+
+export const getUnsortedRecordByHourArray = createSelector(
+	getRecordByHourObject,
+	(recordByHour) => {
+		return Object.keys(recordByHour).map((key) => {
+			recordByHour[key].hour = key;
+			return recordByHour[key];
+		})
+	}
+)
+
+export const getSortedRecordByHourArray = makeSortArrayByWinrate(getUnsortedRecordByHourArray, 'hour')
+
+
+// getCurrentSessionRecord
 export const getCurrentSessionRecord = createSelector(
 	getCurrentSessionMatches,
 	(matches) => {
