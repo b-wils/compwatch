@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import {Table} from 'antd'
+import ReactEcharts from 'echarts-for-react';
 
-import {getMatchesGroupedByMap, getRecordByMapObject, getSortedRecordByMapArray} from '../redux/selectors'
+import {getMatchesGroupedByMap, getRecordByMapObject, getSortedRecordByMapArray, getRatedMatches} from '../redux/selectors'
 
 const columns = [{
   title: 'Map',
@@ -18,9 +19,48 @@ const columns = [{
   dataIndex: 'type'
 }];
 
-const DashboardContainer = ({sortedRecordByMap}) => {
+const DashboardContainer = ({sortedRecordByMap, matches}) => {
+
+//  Variable time axis, looks a bit off
+//   var matchGraphData = matches.map((match)=>[match.localTime.toDate(),match.newSR])
+
+//   var option = {
+//     xAxis: {
+//         type: 'time'
+//     },
+//     yAxis: {
+//         type: 'value',
+//         min: 'dataMin',
+//         max: 'dataMax'
+//     },
+//     series: [{
+//         data: matchGraphData,
+//         type: 'line'
+//     }]
+// };
+
+  var matchGraphData = matches.map((match)=>match.newSR)
+
+  var option = {
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        type: 'value',
+        min: 'dataMin',
+        max: 'dataMax'
+    },
+    series: [{
+        data: matchGraphData,
+        type: 'line'
+    }]
+};
+
+
   return (
-      <div> <Table dataSource={sortedRecordByMap} columns={columns} size='small' pagination={false}/>
+      <div> 
+        <ReactEcharts option={option} />
+        <Table dataSource={sortedRecordByMap} columns={columns} size='small' pagination={false}/>
       </div>
     )
 }
@@ -30,7 +70,8 @@ const mapStateToProps = (state) => {
   return {
     matchesByMap: getMatchesGroupedByMap(state),
     winrateByMap: getRecordByMapObject(state),
-    sortedRecordByMap: getSortedRecordByMapArray(state)
+    sortedRecordByMap: getSortedRecordByMapArray(state),
+    matches: getRatedMatches(state)
   };
 }
 

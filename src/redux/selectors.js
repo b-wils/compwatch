@@ -4,6 +4,7 @@ import get from 'lodash.get';
 
 import getDay from 'date-fns/get_day'
 import getHours from 'date-fns/get_hours'
+import format from 'date-fns/format'
 var differenceInMinutes = require('date-fns/difference_in_minutes')
 
 
@@ -34,6 +35,7 @@ for (var i = 0; i <7; i++) {
 
 const hoursObjectSelector = state => hoursObject
 
+const emptyObjectSelector = state => {}
 
 // Global Selectors
 export const currentSeasonSelector = createSelector(
@@ -99,6 +101,11 @@ export const getMathcesSortedByRecent = createSelector(
 	matchesSelector,
 	matches => matches)
 
+export const getRatedMatches = createSelector(
+	matchesSelector,
+	matches => matches.filter(match => match.newSR)
+	)
+
 export const getMostRecentMatchSelector = createSelector(
 	getMathcesSortedByRecent,
 	matches =>  matches[0])
@@ -145,6 +152,10 @@ export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
 
 				}, mergeData[key])
 
+				if (mergeData[key]) {
+					data = Object.assign(data, mergeData[key])
+				}
+
 				matchList[key].forEach((match) => {
 
 					if (!match.result) {
@@ -171,11 +182,11 @@ export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
 	)
 }
 
-export const makeSortArrayByWinrate = (winrateSelector, secondaryField) => {
+export const makeSortArrayByWinrate = (winrateArraySelector, secondaryField) => {
 	return createSelector(
-		winrateSelector,
+		winrateArraySelector,
 		(winrates) => {
-			console.log(winrates)
+			// console.log(winrates)
 
 			return winrates.sort((a,b)=>{
 				if (a.winrate === b.winrate) {
@@ -309,8 +320,8 @@ export const getSortedRecordByDayArray = makeSortArrayByWinrate(getUnsortedRecor
 
 // Matches by hour of week
 export const getMatchesGroupedByHour = createSelector(
-	matchesSelector, heroesSelector,
-	(matches, heroes) => {
+	matchesSelector,
+	(matches) => {
 
 		var matchesByHour = {}
 
@@ -343,6 +354,49 @@ export const getUnsortedRecordByHourArray = createSelector(
 )
 
 export const getSortedRecordByHourArray = makeSortArrayByWinrate(getUnsortedRecordByHourArray, 'hour')
+
+// Matches by date
+export const getMatchesGroupedByDate = createSelector(
+	matchesSelector,
+	(matches) => {
+
+		var matchesByDate = {}
+
+		for (var i = 0; i<24; i++) {
+			matchesByDate[i] = [];
+		}
+
+		matches.forEach((match) => {
+			if (match.localTime === null) {
+				return;
+			}
+
+			var dateStr = format(match.localTime.toDate(), 'YYYY-MM-DD')
+
+			if (matchesByDate[dateStr] === null) {
+				matchesByDate[dateStr] = [];
+			}
+
+			matchesByDate[dateStr].push(match);
+		})
+
+		return matchesByDate;
+	}
+)
+
+export const getRecordByDateObject = makeGetRecordByArray(getMatchesGroupedByDate, emptyObjectSelector);
+
+export const getUnsortedRecordByDateArray = createSelector(
+	getRecordByDateObject,
+	(recordByDate) => {
+		return Object.keys(recordByDate).map((key) => {
+			recordByDate[key].date = key;
+			return recordByDate[key];
+		})
+	}
+)
+
+export const getSortedRecordByDateArray = makeSortArrayByWinrate(getUnsortedRecordByDateArray, 'date')
 
 
 // getCurrentSessionRecord
