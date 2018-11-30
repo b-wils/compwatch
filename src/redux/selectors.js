@@ -143,14 +143,14 @@ export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
 			var winRates = {}
 
 			Object.keys(matchList).forEach((key) => {
-				var data = Object.assign({
+				var data = {
 					win: 0,
 					loss: 0,
 					draw: 0,
 					key: key
 					// type: mapsObject[map].type
 
-				}, mergeData[key])
+				}
 
 				if (mergeData[key]) {
 					data = Object.assign(data, mergeData[key])

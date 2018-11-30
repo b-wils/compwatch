@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {Table} from 'antd'
 import ReactEcharts from 'echarts-for-react';
 
-import {getMatchesGroupedByMap, getRecordByMapObject, getSortedRecordByMapArray, getRatedMatches} from '../redux/selectors'
+import {getSortedRecordByMapArray, getRatedMatches, getSortedRecordByHeroArray} from '../redux/selectors'
 
 const columns = [{
   title: 'Map',
@@ -19,7 +19,7 @@ const columns = [{
   dataIndex: 'type'
 }];
 
-const DashboardContainer = ({sortedRecordByMap, matches}) => {
+const DashboardContainer = ({sortedRecordByMap, matches, heroData}) => {
 
 //  Variable time axis, looks a bit off
 //   var matchGraphData = matches.map((match)=>[match.localTime.toDate(),match.newSR])
@@ -41,7 +41,7 @@ const DashboardContainer = ({sortedRecordByMap, matches}) => {
 
   var matchGraphData = matches.map((match)=>match.newSR)
 
-  var option = {
+  var matchOption = {
     xAxis: {
         type: 'category'
     },
@@ -56,10 +56,36 @@ const DashboardContainer = ({sortedRecordByMap, matches}) => {
     }]
 };
 
+  var totalMatches = matches.length;
+
+  var heroGraphData = heroData.map((hero)=>[hero.total/totalMatches, hero.winrate, hero.name])
+
+  var heroOption = {
+    xAxis: {
+      name:"Play Amount",
+      nameLocation: "middle"
+    },
+    yAxis: {
+      name:"Winrate",
+      nameLocation: "middle"
+    },
+    series: [{
+        symbolSize: 20,
+        data: heroGraphData,
+        type: 'scatter'
+    }],
+    tooltip: {
+      position: 'top',
+      formatter: function (params) {
+          return `${params.value[2]} winrate of ${(params.value[1] * 100).toFixed(2)}% in ${(params.value[0] * 100).toFixed(2)}% of games`;
+      }
+    }
+  }
 
   return (
       <div> 
-        <ReactEcharts option={option} />
+        <ReactEcharts option={matchOption} />
+        <ReactEcharts option={heroOption} />
         <Table dataSource={sortedRecordByMap} columns={columns} size='small' pagination={false}/>
       </div>
     )
@@ -68,10 +94,9 @@ const DashboardContainer = ({sortedRecordByMap, matches}) => {
 
 const mapStateToProps = (state) => {
   return {
-    matchesByMap: getMatchesGroupedByMap(state),
-    winrateByMap: getRecordByMapObject(state),
     sortedRecordByMap: getSortedRecordByMapArray(state),
-    matches: getRatedMatches(state)
+    matches: getRatedMatches(state),
+    heroData: getSortedRecordByHeroArray(state).filter(hero => hero.total > 0)
   };
 }
 
