@@ -35,7 +35,7 @@ for (var i = 0; i <7; i++) {
 
 const hoursObjectSelector = state => hoursObject
 
-const emptyObjectSelector = state => {}
+const emptyObjectSelector = state => ({})
 
 // Global Selectors
 export const currentSeasonSelector = createSelector(
@@ -136,7 +136,7 @@ export const getCurrentSessionMatches = createSelector(
 )
 
 // Utility function that will take a smap of objects and calculate win rates
-export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
+export const makeGetRecordByArray = (matchListSelector, mergeDataSelector ) => {
 	return createSelector(
 		matchListSelector, mergeDataSelector,
 		(matchList, mergeData) => {
@@ -149,7 +149,6 @@ export const makeGetRecordByArray = (matchListSelector, mergeDataSelector) => {
 					draw: 0,
 					key: key
 					// type: mapsObject[map].type
-
 				}
 
 				if (mergeData[key]) {
@@ -186,7 +185,6 @@ export const makeSortArrayByWinrate = (winrateArraySelector, secondaryField) => 
 	return createSelector(
 		winrateArraySelector,
 		(winrates) => {
-			// console.log(winrates)
 
 			return winrates.sort((a,b)=>{
 				if (a.winrate === b.winrate) {
@@ -355,16 +353,12 @@ export const getUnsortedRecordByHourArray = createSelector(
 
 export const getSortedRecordByHourArray = makeSortArrayByWinrate(getUnsortedRecordByHourArray, 'hour')
 
-// Matches by date
+// Matches by date TODO not tested, think there are issues
 export const getMatchesGroupedByDate = createSelector(
 	matchesSelector,
 	(matches) => {
 
 		var matchesByDate = {}
-
-		for (var i = 0; i<24; i++) {
-			matchesByDate[i] = [];
-		}
 
 		matches.forEach((match) => {
 			if (match.localTime === null) {
@@ -373,9 +367,10 @@ export const getMatchesGroupedByDate = createSelector(
 
 			var dateStr = format(match.localTime.toDate(), 'YYYY-MM-DD')
 
-			if (matchesByDate[dateStr] === null) {
+			if (matchesByDate[dateStr] === undefined) {
 				matchesByDate[dateStr] = [];
 			}
+
 
 			matchesByDate[dateStr].push(match);
 		})
@@ -396,8 +391,69 @@ export const getUnsortedRecordByDateArray = createSelector(
 	}
 )
 
-export const getSortedRecordByDateArray = makeSortArrayByWinrate(getUnsortedRecordByDateArray, 'date')
+// Matches by [day][hour]
+export const getMatchesGroupedByWeekdayThenHour = createSelector(
+	matchesSelector,
+	(matches) => {
 
+		var matchesByWeekdayThenHour = {}
+
+		// for (let i = 0; i<7; i++) {
+		// 	for (let j = 0; j<24; j++) {
+		// 		matchesByWeekdayThenHour[`${i}_${j}`] = [];
+		// 	}
+		// }
+
+		matches.forEach((match) => {
+			if (match.localTime === null) {
+				return;
+			}
+
+			var date = match.localTime.toDate();
+
+			var key = `${getDay(date)}_${getHours(date)}`;
+
+			if (matchesByWeekdayThenHour[key] === undefined) {
+				matchesByWeekdayThenHour[key] = [];
+			}
+			// console.log(`${getDay(date)}_${getHours(date)}`)
+
+			matchesByWeekdayThenHour[key].push(match);
+		})
+
+		return matchesByWeekdayThenHour;
+	}
+)
+
+// export const getWeekDayThenHourMergeData = createSelector(
+// 	getMatchesGroupedByWeekdayThenHour,
+// 	(groupedMatches) => {
+// 		var mergeData = {}
+
+// 		Object.keys(groupedMatches).forEach((groupKey) => {
+// 			var newSRArray = groupedMatches(groupKey)
+
+// 			var groupData = {
+// 				maxSR
+// 			}
+// 		})
+// 	}
+// )
+
+export const getRecordByWeekdayThenHourObject = makeGetRecordByArray(getMatchesGroupedByWeekdayThenHour, emptyObjectSelector);
+
+export const getUnsortedRecordByWeekdayThenHourArray = createSelector(
+	getRecordByWeekdayThenHourObject,
+	(recordByWeekdayThenHour) => {
+		return Object.keys(recordByWeekdayThenHour).map((key) => {
+			// TODO should we do this as merge object?
+			var vals = key.split("_")
+			recordByWeekdayThenHour[key].weekday = vals[0];
+			recordByWeekdayThenHour[key].hour = vals[1];
+			return recordByWeekdayThenHour[key];
+		})
+	}
+)
 
 // getCurrentSessionRecord
 export const getCurrentSessionRecord = createSelector(
