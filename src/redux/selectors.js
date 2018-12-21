@@ -114,10 +114,42 @@ export const getCurrentSRSelector = createSelector(
 	getMostRecentMatchSelector,
 	match =>  get(match, "newSR", null))
 
+export const getMaxSRSelector = createSelector(
+	matchesSelector,
+	matches => {
+		var firstGame = matches[matches.length-1];
+
+		var newSRArray = matches.map((match) => (match.newSR))
+
+		return Math.max(firstGame.currentSR, ...newSRArray)
+	}
+)
+
+export const getMax100SRSelector = createSelector(
+	getMaxSRSelector,
+	SR => (Math.ceil(SR/100) * 100).toFixed(0)
+)
+
+export const getMinSRSelector = createSelector(
+	matchesSelector,
+	matches => {
+		var firstGame = matches[matches.length-1];
+
+		var newSRArray = matches.map((match) => (match.newSR)).filter((SR) => (SR > 0))
+
+		return Math.min(...newSRArray)
+	}
+)
+
+export const getMin100SRSelector = createSelector(
+	getMinSRSelector,
+	SR => (Math.floor(SR/100) * 100).toFixed(0)
+)
+
 // TODO since the selector will cache results based on input, it can give stale results if sufficient time has passed 
 export const getCurrentSessionMatches = createSelector(
-	getMathcesSortedByRecent,
-	(matches) => {
+		getMathcesSortedByRecent,
+		(matches) => {
 		// TODO we should probably use the firebase server time for consistency, not sure how to get that though
 		var lastGameTime = new Date();
 		var sessionMatches = [];

@@ -7,7 +7,7 @@ import format from 'date-fns/format'
 import setDay from 'date-fns/set_day'
 import setHours from 'date-fns/set_hours'
 
-import {getSortedRecordByMapArray, getRatedMatches, getSortedRecordByHeroArray, getUnsortedRecordByDateArray, getUnsortedRecordByWeekdayThenHourArray} from '../redux/selectors'
+import {getSortedRecordByMapArray, getRatedMatches, getSortedRecordByHeroArray, getUnsortedRecordByDateArray, getUnsortedRecordByWeekdayThenHourArray, getMax100SRSelector, getMin100SRSelector} from '../redux/selectors'
 
 const columns = [{
   title: 'Map',
@@ -310,7 +310,9 @@ const mapStateToProps = (state) => {
     matches: getRatedMatches(state),
     heroData: getSortedRecordByHeroArray(state).filter(hero => hero.total > 0),
     dateData: getUnsortedRecordByDateArray(state),
-    weekdayHourData: getUnsortedRecordByWeekdayThenHourArray(state)
+    weekdayHourData: getUnsortedRecordByWeekdayThenHourArray(state),
+    max100SR: getMax100SRSelector(state),
+    min100SR: getMin100SRSelector(state)
   };
 }
 
