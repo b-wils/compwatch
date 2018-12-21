@@ -353,7 +353,7 @@ export const getUnsortedRecordByHourArray = createSelector(
 
 export const getSortedRecordByHourArray = makeSortArrayByWinrate(getUnsortedRecordByHourArray, 'hour')
 
-// Matches by date TODO not tested, think there are issues
+// Matches by Date
 export const getMatchesGroupedByDate = createSelector(
 	matchesSelector,
 	(matches) => {
@@ -379,7 +379,34 @@ export const getMatchesGroupedByDate = createSelector(
 	}
 )
 
-export const getRecordByDateObject = makeGetRecordByArray(getMatchesGroupedByDate, emptyObjectSelector);
+export const getDateMergeData = createSelector(
+	getMatchesGroupedByDate,
+	(groupedMatches) => {
+		var mergeData = {}
+
+		Object.keys(groupedMatches).forEach((groupKey) => {
+
+			var matches = groupedMatches[groupKey];
+
+			var newSRArray = matches.map((matchGroup) => (matchGroup.newSR))
+
+			var firstGame = matches[matches.length-1]
+
+			var groupData = {
+				startSR: firstGame.currentSR,
+				endSR: newSRArray[0],
+				maxSR: Math.max(firstGame.currentSR, ...newSRArray),
+				minSR: Math.min(firstGame.currentSR, ...newSRArray) || undefined
+			}
+
+			mergeData[groupKey] = groupData;
+		})
+
+		return mergeData;
+	}
+)
+
+export const getRecordByDateObject = makeGetRecordByArray(getMatchesGroupedByDate, getDateMergeData);
 
 export const getUnsortedRecordByDateArray = createSelector(
 	getRecordByDateObject,
@@ -390,6 +417,8 @@ export const getUnsortedRecordByDateArray = createSelector(
 		})
 	}
 )
+
+
 
 // Matches by [day][hour]
 export const getMatchesGroupedByWeekdayThenHour = createSelector(
@@ -424,21 +453,6 @@ export const getMatchesGroupedByWeekdayThenHour = createSelector(
 		return matchesByWeekdayThenHour;
 	}
 )
-
-// export const getWeekDayThenHourMergeData = createSelector(
-// 	getMatchesGroupedByWeekdayThenHour,
-// 	(groupedMatches) => {
-// 		var mergeData = {}
-
-// 		Object.keys(groupedMatches).forEach((groupKey) => {
-// 			var newSRArray = groupedMatches(groupKey)
-
-// 			var groupData = {
-// 				maxSR
-// 			}
-// 		})
-// 	}
-// )
 
 export const getRecordByWeekdayThenHourObject = makeGetRecordByArray(getMatchesGroupedByWeekdayThenHour, emptyObjectSelector);
 

@@ -74,6 +74,7 @@ const DashboardContainer = ({sortedRecordByMap, matches, heroData, dateData, day
       <div> 
         <MatchChart matches={matches} />
         <PunchCard weekdayHourData={weekdayHourData} />
+        <CandlestickChart dateData={dateData} />
         <ReactEcharts option={heroOption} />
         <ReactEcharts option={dateOption} />
         <Table dataSource={sortedRecordByMap} columns={columns} size='small' pagination={false}/>
@@ -124,7 +125,105 @@ const MatchChart = ({matches}) => {
 }
 
 
+function splitData(rawData) {
+    var categoryData = [];
+    var values = []
+    for (var i = 0; i < rawData.length; i++) {
+        categoryData.push(rawData[i].splice(0, 1)[0]);
+        values.push(rawData[i])
+    }
+    return {
+        categoryData: categoryData,
+        values: values
+    };
+}
+
+const CandlestickChart = ({dateData}) => {
+
+var downColor = '#ec0000';
+var downBorderColor = '#8A0000';
+var upColor = '#00da3c';
+var upBorderColor = '#008F28';
+
+  var matchGraphData = dateData.filter((dateEntry)=>(dateEntry.startSR)).map((dateEntry)=>[dateEntry.date, dateEntry.startSR, dateEntry.endSR, dateEntry.minSR, dateEntry.maxSR]).reverse();
+
+  var data0 = splitData(matchGraphData)
+
+var option = {
+    title: {
+        text: '上证指数',
+        left: 0
+    },
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross'
+        }
+    },
+    legend: {
+        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
+    },
+    grid: {
+        left: '10%',
+        right: '10%',
+        bottom: '15%'
+    },
+    xAxis: {
+        type: 'category',
+        data: data0.categoryData,
+        scale: true,
+        boundaryGap : false,
+        axisLine: {onZero: false},
+        splitLine: {show: false},
+        splitNumber: 20,
+        min: 'dataMin',
+        max: 'dataMax'
+    },
+    yAxis: {
+        scale: true,
+        splitArea: {
+            show: true
+        }
+    },
+    dataZoom: [
+        {
+            type: 'inside',
+            start: 0,
+            end: 100
+        },
+        {
+            show: true,
+            type: 'slider',
+            y: '90%',
+            start: 0 ,
+            end: 100
+        }
+    ],
+    series: [
+        {
+            name: '日K',
+            type: 'candlestick',
+            data: data0.values,
+            itemStyle: {
+                normal: {
+                    color: upColor,
+                    color0: downColor,
+                    borderColor: upBorderColor,
+                    borderColor0: downBorderColor
+                }
+            }
+        }
+    ]
+};
+
+  return (
+      <ReactEcharts option={option} />
+    )
+}
+
+
 var hoursLabels = [];
+var daysLabels = [];
 
 var now = new Date();
 
@@ -132,10 +231,10 @@ for (let i = 0; i<24;i++) {
   hoursLabels.push(format(setHours(now,i),'h a'))
 }
 
-console.log(hoursLabels)
-
-var days = ['Saturday', 'Friday', 'Thursday',
-        'Wednesday', 'Tuesday', 'Monday', 'Sunday'];
+// TODO, this is displaying days in reverse order
+for (let i = 0; i<7;i++) {
+  daysLabels.push(format(setDay(now,i),'dddd'))
+}
 
 const PunchCard = ({weekdayHourData}) => {
 
@@ -155,7 +254,7 @@ var option = {
     tooltip: {
         position: 'top',
         formatter: function (params) {
-            return params.value[2] + ' commits in ' + hoursLabels[params.value[0]] + ' of ' + days[params.value[1]];
+            return params.value[2] + ' commits in ' + hoursLabels[params.value[0]] + ' of ' + daysLabels[params.value[1]];
         }
     },
     grid: {
@@ -181,7 +280,7 @@ var option = {
     },
     yAxis: {
         type: 'category',
-        data: days,
+        data: daysLabels,
         axisLine: {
             show: false
         }
