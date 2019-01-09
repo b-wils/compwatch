@@ -26,20 +26,20 @@ maps.forEach((map) => {
 	var setMap = docRef.set(map);
 });
 
-Object.keys(matches).forEach((matchId) => {
+// Object.keys(matches).forEach((matchId) => {
 
-	var match = matches[matchId].data ? matches[matchId].data : matches[matchId];
+// 	var match = matches[matchId].data ? matches[matchId].data : matches[matchId];
 
-	// Need to convert to date so firestore will convert these to timestamps
-	if (match.localTime) {
-		match.localTime = new Date(match.localTime._seconds*1000)	
-	}
+// 	// Need to convert to date so firestore will convert these to timestamps
+// 	if (match.localTime) {
+// 		match.localTime = new Date(match.localTime._seconds*1000)	
+// 	}
 	
-	if (match.firebaseTime) {
-		match.firebaseTime = new Date(match.firebaseTime._seconds*1000)
-	}
+// 	if (match.firebaseTime) {
+// 		match.firebaseTime = new Date(match.firebaseTime._seconds*1000)
+// 	}
 
-	var docRef = db.collection('matches').doc(matchId);
-	var setMap = docRef.set(match);
+// 	var docRef = db.collection('matches').doc(matchId);
+// 	var setMap = docRef.set(match);
 
-})
+// })

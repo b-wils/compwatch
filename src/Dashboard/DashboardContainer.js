@@ -29,6 +29,8 @@ const DashboardContainer = ({sortedRecordByMap, matches, heroData, dateData, day
 
   var heroGraphData = heroData.map((hero)=>[hero.total/totalMatches, hero.winrate, hero.name])
 
+  const DEFAULT_HERO_COLOR = "#000000"
+
   var heroOption = {
     xAxis: {
       name:"Play Amount",
@@ -41,7 +43,14 @@ const DashboardContainer = ({sortedRecordByMap, matches, heroData, dateData, day
     series: [{
         symbolSize: 20,
         data: heroGraphData,
-        type: 'scatter'
+        type: 'scatter',
+        itemStyle: {
+            normal: {
+                color: function (param) {
+                    return heroData[param.dataIndex].color || DEFAULT_HERO_COLOR;
+                }
+            }
+        }
     }],
     tooltip: {
       position: 'top',
