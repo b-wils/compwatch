@@ -8,6 +8,7 @@ import setDay from 'date-fns/set_day'
 import setHours from 'date-fns/set_hours'
 
 import {getSortedRecordByMapArray, getRatedMatches, getSortedRecordByHeroArray, getUnsortedRecordByDateArray, getUnsortedRecordByWeekdayThenHourArray, getMax100SRSelector, getMin100SRSelector} from '../redux/selectors'
+import {getColorForWinrate} from '../util'
 
 const columns = [{
   title: 'Map',
@@ -245,11 +246,17 @@ for (let i = 0; i<7;i++) {
   daysLabels.push(format(setDay(now,i),'dddd'))
 }
 
+const MIN_PUNCH_SIZE = 6;
+const MAX_PUNCH_SIZE = 30;
+
 const PunchCard = ({weekdayHourData}) => {
 
 
+  var data = weekdayHourData.map((matchGroup)=>[ parseInt(matchGroup.hour), parseInt(matchGroup.weekday), matchGroup.total, matchGroup.winrate])
 
-  var data = weekdayHourData.map((matchGroup)=>[ parseInt(matchGroup.hour), parseInt(matchGroup.weekday), matchGroup.total])
+  var maxMatches = Math.max(...weekdayHourData.map((matchGroup)=>matchGroup.total))
+
+  var PUNCH_MULTIPLIER = (MAX_PUNCH_SIZE - MIN_PUNCH_SIZE) / maxMatches;
 
 var option = {
     title: {
@@ -263,7 +270,7 @@ var option = {
     tooltip: {
         position: 'top',
         formatter: function (params) {
-            return params.value[2] + ' commits in ' + hoursLabels[params.value[0]] + ' of ' + daysLabels[params.value[1]];
+            return `winrate of ${params.value[3]} in ${params.value[2]} matches`
         }
     },
     grid: {
@@ -298,11 +305,20 @@ var option = {
         name: 'Punch Card',
         type: 'scatter',
         symbolSize: function (val) {
-            return val[2] * 4;
+            return val[2] * PUNCH_MULTIPLIER + MIN_PUNCH_SIZE;
         },
         data: data,
         animationDelay: function (idx) {
             return idx * 5;
+        },
+        itemStyle: {
+            normal: {
+                color: function (param) {
+                    return getColorForWinrate(param.data[3])
+                },
+                opacity: 0.8
+              }
+
         }
     }]
 };
