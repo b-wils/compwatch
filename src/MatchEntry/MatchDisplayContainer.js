@@ -67,7 +67,6 @@ class MatchEntryContainer extends Component {
 
     var updates = {}
 
-
     if (placementMatch) {
       updates = {result : name}
     } else {
@@ -120,6 +119,7 @@ class MatchEntryContainer extends Component {
     // Large SR changes typically mean the user is typing and we shouldn't update prematurely
     // Not sure if this is a good solution
     if (Math.abs(SRDiff) > MAXIMUM_SR_DIFFERENCE_UPDATE || newSR === undefined || currentSR === undefined) {
+      this.props.onChange(localMatch)
       return;
     }
 
