@@ -7,10 +7,10 @@ import setHours from 'date-fns/set_hours'
 
 import {getColorForWinrate} from '../util'
 
-import {getUnsortedRecordByWeekdayThenHourArray} from '../redux/selectors'
+import {getUnsortedRecordByWeekdayThenHourArray, getUnsortedRecordByDayArray, getUnsortedRecordByHourArray} from '../redux/selectors'
 
-var hoursLabels = [];
-var daysLabels = [];
+var hoursLabels = ['All Days'];
+var daysLabels = ['All Hours'];
 
 var now = new Date();
 
@@ -24,16 +24,22 @@ for (let i = 0; i<7;i++) {
 }
 
 const MIN_PUNCH_SIZE = 6;
-const MAX_PUNCH_SIZE = 30;
+const MAX_PUNCH_SIZE = 28;
 
-const MatchesPunchcard = ({weekdayHourData}) => {
-
-
-  var data = weekdayHourData.map((matchGroup)=>[ parseInt(matchGroup.hour), parseInt(matchGroup.weekday), matchGroup.total, matchGroup.winrate])
+const MatchesPunchcard = ({weekdayHourData, hourData, weekdayData}) => {
 
   var maxMatches = Math.max(...weekdayHourData.map((matchGroup)=>matchGroup.total))
-
   var PUNCH_MULTIPLIER = (MAX_PUNCH_SIZE - MIN_PUNCH_SIZE) / maxMatches;
+  var data = weekdayHourData.map((matchGroup)=>[ parseInt(matchGroup.hour) + 1, parseInt(matchGroup.weekday) + 1, matchGroup.total, matchGroup.winrate, PUNCH_MULTIPLIER])
+
+
+  var maxMatchesHour = Math.max(...hourData.map((matchGroup)=>matchGroup.total))
+  var HOUR_PUNCH_MULTIPLIER = (MAX_PUNCH_SIZE - MIN_PUNCH_SIZE) / maxMatchesHour;
+  var hourOptionData = hourData.map((matchGroup) => [parseInt(matchGroup.hour) + 1, 0, matchGroup.total, matchGroup.winrate, HOUR_PUNCH_MULTIPLIER])
+
+  var maxMatchesDay = Math.max(...weekdayData.map((matchGroup)=>matchGroup.total))
+  var DAY_PUNCH_MULTIPLIER = (MAX_PUNCH_SIZE - MIN_PUNCH_SIZE) / maxMatchesDay;
+  var weekdayOptionData = weekdayData.map((matchGroup) => [0, parseInt(matchGroup.day) + 1, matchGroup.total, matchGroup.winrate, DAY_PUNCH_MULTIPLIER])
 
 var option = {
     title: {
@@ -47,7 +53,7 @@ var option = {
     tooltip: {
         position: 'top',
         formatter: function (params) {
-            return `winrate of ${params.value[3]} in ${params.value[2]} matches`
+            return `winrate of ${(params.value[3] * 100).toFixed(2)}% in ${params.value[2]} matches`
         }
     },
     grid: {
@@ -82,9 +88,9 @@ var option = {
         name: 'Punch Card',
         type: 'scatter',
         symbolSize: function (val) {
-            return val[2] * PUNCH_MULTIPLIER + MIN_PUNCH_SIZE;
+            return val[2] * val[4] + MIN_PUNCH_SIZE;
         },
-        data: data,
+        data: data.concat(hourOptionData, weekdayOptionData),
         animationDelay: function (idx) {
             return idx * 5;
         },
@@ -109,7 +115,9 @@ var option = {
 
 const mapStateToProps = (state) => {
   return {
-    weekdayHourData: getUnsortedRecordByWeekdayThenHourArray(state)
+    weekdayHourData: getUnsortedRecordByWeekdayThenHourArray(state),
+    weekdayData: getUnsortedRecordByDayArray(state).filter(group => group.total > 0),
+    hourData: getUnsortedRecordByHourArray(state).filter(group => group.total > 0)
   };
 }
 
