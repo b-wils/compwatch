@@ -269,6 +269,48 @@ export const getUnsortedRecordByMapArray = createSelector(
 	}
 )
 
+export const getRecordByMapTypesObject = createSelector(
+	getUnsortedRecordByMapArray,
+	(recordByMapArray) => {
+
+		let mapTypes = recordByMapArray.reduce((acc, cur) => {
+
+			if (!acc[cur.type]) {
+				acc[cur.type] = [{
+					win: 0,
+					loss: 0,
+					draw: 0,
+					name: 'Total ' + cur.type,
+					key: 'Total ' + cur.type
+				}]
+			}
+
+			let typeEntry = acc[cur.type]
+
+			typeEntry.push(cur)
+
+			typeEntry[0].win += cur.win;
+			typeEntry[0].loss += cur.loss;
+			typeEntry[0].draw += cur.draw;
+
+			return acc;
+
+		},{})
+
+		console.log(mapTypes)
+
+		Object.keys(mapTypes).forEach((typeKey) => {
+			let typeTotals = mapTypes[typeKey][0];
+			typeTotals.total = typeTotals.win + typeTotals.loss + typeTotals.draw
+			typeTotals.winrate = (typeTotals.win + typeTotals.draw/2) / typeTotals.total;
+
+		})
+
+		return mapTypes;
+
+	}
+)
+
 export const getSortedRecordByMapArray = makeSortArrayByWinrate(getUnsortedRecordByMapArray, 'map')
 
 // Matches by Hero

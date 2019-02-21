@@ -8,8 +8,7 @@ var firebase = require('firebase-admin');
 var serviceAccount = process.env.FIREBASE_ADMIN_CONFIG;
 
 firebase.initializeApp({
-  credential: firebase.credential.cert(serviceAccount),
-  databaseURL: "https://compwatch-207022.firebaseio.com"
+  credential: firebase.credential.cert(serviceAccount)
 });
 
 var db = firebase.firestore();
