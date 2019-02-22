@@ -8,7 +8,7 @@ const MapBarGraph = ({mapData, mapTypeData}) => {
 
   var mapGraphData = mapData.map((map)=>[map.type, map.winrate, map])
 
-  const DEFAULT_MAP_COLOR = "#000000"
+  const DEFAULT_MAP_COLOR = "#145214"
 
   var mapTypeGraphData = Object.keys(mapTypeData).map((mapType) => [mapType, ...mapTypeData[mapType].map((map)=>map.winrate)])
 

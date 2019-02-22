@@ -37,7 +37,7 @@ module.exports =  heroes = [
 {
 	"name": "Route 66",
 	"type": "Escort",
-	"color": "#F29965"
+	"color": "#FEB482"
 },
 {
 	"name": "Watchpoint: Gibraltar",
@@ -57,7 +57,7 @@ module.exports =  heroes = [
 {
 	"name": "Hollywood",
 	"type": "Hybrid",
-	"color": "#D2BA84"
+	"color": "#EDAF6A"
 },
 {
 	"name": "King's Row",
@@ -67,7 +67,7 @@ module.exports =  heroes = [
 {
 	"name": "Numbani",
 	"type": "Hybrid",
-	"color": "#E1BA7A"
+	"color": "#F5E6C5"
 },
 {
 	"name": "Busan",
