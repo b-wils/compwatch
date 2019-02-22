@@ -297,8 +297,6 @@ export const getRecordByMapTypesObject = createSelector(
 
 		},{})
 
-		console.log(mapTypes)
-
 		Object.keys(mapTypes).forEach((typeKey) => {
 			let typeTotals = mapTypes[typeKey][0];
 			typeTotals.total = typeTotals.win + typeTotals.loss + typeTotals.draw
