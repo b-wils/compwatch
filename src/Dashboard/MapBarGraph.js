@@ -4,13 +4,11 @@ import ReactEcharts from 'echarts-for-react';
 
 import {getUnsortedRecordByMapArray, getRecordByMapTypesObject} from '../redux/selectors'
 
-const MapBarGraph = ({mapData, mapTypeData}) => {
-
-  var mapGraphData = mapData.map((map)=>[map.type, map.winrate, map])
+const MapBarGraph = ({mapTypeData}) => {
 
   const DEFAULT_MAP_COLOR = "#145214"
 
-  var mapTypeGraphData = Object.keys(mapTypeData).map((mapType) => [mapType, ...mapTypeData[mapType].map((map)=>map.winrate)])
+  var mapTypeGraphData = Object.keys(mapTypeData).map((mapType) => [mapType, ...mapTypeData[mapType].map((map)=>map.winrate * 100)])
 
   // Find the type with most number of maps, -1 for the type text
   const NUM_ENTRIES_PER_TYPE = Math.max(...mapTypeGraphData.map((a)=>a.length)) - 1;
@@ -41,10 +39,18 @@ const MapBarGraph = ({mapData, mapTypeData}) => {
     dataset: {
       source: mapTypeGraphData
     },
+    title: {
+      text: "Map Winrates"
+    },
     xAxis: {
       type: 'category'
   },
-    yAxis: {name: 'winrate'},
+    yAxis: {
+      name: 'Winrate',
+      min: 0,
+      max: 100,
+      interval: 25,
+    },
     series: seriesData,
     tooltip: {
       position: 'top',
@@ -62,7 +68,6 @@ const MapBarGraph = ({mapData, mapTypeData}) => {
 
 const mapStateToProps = (state) => {
   return {
-    mapData: getUnsortedRecordByMapArray(state),
     mapTypeData: getRecordByMapTypesObject(state)
   };
 }

@@ -43,8 +43,7 @@ const MatchesPunchcard = ({weekdayHourData, hourData, weekdayData}) => {
 
 var option = {
     title: {
-        text: 'Punch Card of Github',
-        link: 'https://github.com/pissang/echarts-next/graphs/punch-card'
+        text: 'Winrate Punchcard'
     },
     legend: {
         data: ['Punch Card'],
@@ -85,7 +84,6 @@ var option = {
         }
     },
     series: [{
-        name: 'Punch Card',
         type: 'scatter',
         symbolSize: function (val) {
             return val[2] * val[4] + MIN_PUNCH_SIZE;

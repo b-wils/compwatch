@@ -6,18 +6,25 @@ import {getSortedRecordByHeroArray, getMathcesSortedByRecent} from '../redux/sel
 
 const HeroScatter = ({totalMatches, heroData}) => {
 
-  var heroGraphData = heroData.map((hero)=>[hero.total/totalMatches, hero.winrate, hero.name])
+  var heroGraphData = heroData.map((hero)=>[hero.total, hero.winrate * 100, hero.name])
 
   const DEFAULT_HERO_COLOR = "#000000"
 
   var option = {
+    title: {
+      text: 'Hero Winrates'
+    },
     xAxis: {
-      name:"Play Amount",
-      nameLocation: "middle"
+      name:"Games Played",
+      nameLocation: "middle",
+      type: "value",
+      min: 0,
     },
     yAxis: {
       name:"Winrate",
-      nameLocation: "middle"
+      min: 0,
+      max: 100,
+      interval: 25,
     },
     series: [{
         symbolSize: 20,
@@ -34,7 +41,7 @@ const HeroScatter = ({totalMatches, heroData}) => {
     tooltip: {
       position: 'top',
       formatter: function (params) {
-          return `${params.value[2]} winrate of ${(params.value[1] * 100).toFixed(2)}% in ${(params.value[0] * 100).toFixed(2)}% of games`;
+          return `${params.value[2]} winrate of ${(params.value[1]).toFixed(2)}% in ${(params.value[0])} games`;
       }
     }
   }

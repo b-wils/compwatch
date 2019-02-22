@@ -13,11 +13,10 @@ const DashboardContainer = () => {
 
   return (
       <div> 
+      	<MatchesCandlestick />
+      	<HeroScatter/>
       	<MapBarGraph />
         <MatchesPunchcard />
-        <MatchesCandlestick />
-        <HeroScatter/>
-        <MatchHeatmap />
       </div>
     )
 }

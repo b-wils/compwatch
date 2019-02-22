@@ -30,17 +30,11 @@ const MatchesCandlestick = ({dateData}) => {
 
     var option = {
         title: {
-            text: '上证指数',
+            text: 'SR History',
             left: 0
         },
         tooltip: {
-            trigger: 'axis',
-            axisPointer: {
-                type: 'cross'
-            }
-        },
-        legend: {
-            data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
+            trigger: 'axis'
         },
         grid: {
             left: '10%',
@@ -80,7 +74,7 @@ const MatchesCandlestick = ({dateData}) => {
         ],
         series: [
             {
-                name: '日K',
+                name: 'SR',
                 type: 'candlestick',
                 data: data0.values,
                 itemStyle: {
