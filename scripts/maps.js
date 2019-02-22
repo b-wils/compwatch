@@ -10,6 +10,11 @@ module.exports =  heroes = [
 	"color": "#444348"
 },
 {
+	"name": "Paris",
+	"type": "Assault",
+	"color": "#66392B"
+},
+{
 	"name": "Temple of Anubis",
 	"type": "Assault",
 	"color": "#D69B5C"
