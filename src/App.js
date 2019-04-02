@@ -76,6 +76,9 @@ const LoginPage = ({firebase,auth}) => (
               <button onClick={() => firebase.login({ provider: 'google', type: 'popup' })}>
                 Login With Google
               </button>
+              <button onClick={() => firebase.login({ provider: 'facebook', type: 'popup' })}>
+                Login With Facebook
+              </button>
             </div>
           : <Redirect to="/addmatch"/>
   )
