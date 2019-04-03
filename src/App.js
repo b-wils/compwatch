@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { firebaseConnect, isEmpty, isLoaded } from 'react-redux-firebase'
-import { BrowserRouter as Router, Route, Link, Redirect, Switch } from "react-router-dom";
+import { Router, Route, Link, Redirect, Switch } from "react-router-dom";
 import styled from 'styled-components/macro';
 import {css, ThemeProvider} from 'styled-components'
 import {Helmet} from "react-helmet";
+import ReactGA from 'react-ga';
 
 import AppRoute from './common/AppRoute'
 // import './App.css';
@@ -16,6 +17,17 @@ import MatchDetails from './MatchEntry/MatchDetailsContainer'
 import Dashboard from './Dashboard/DashboardContainer'
 import HeroWinrate from './Dashboard/HeroWinrateContainer'
 import DayWinrate from './Dashboard/DayWinrateContainer'
+import createHistory from 'history/createBrowserHistory'
+
+ReactGA.initialize(process.env.REACT_APP_GOOGLE_ANALYTICS_TAG);
+
+ReactGA.pageview(window.location.pathname + window.location.search);
+
+const history = createHistory()
+history.listen((location, action) => {
+  ReactGA.set({ page: location.pathname });
+  ReactGA.pageview(location.pathname);
+});
 
 class App extends Component {
   static contextTypes = {
@@ -34,7 +46,7 @@ class App extends Component {
 
           {isDev && process.env.REACT_APP_HIDE_DEV_WARNING !== 'true' && <DevWarningDiv position="top"/>}
           
-          <Router>
+          <Router history={history}>
             <Switch>
               
               <AppRoute path="/addmatch" component={MatchEntry} />
