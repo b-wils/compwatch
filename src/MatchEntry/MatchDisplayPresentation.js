@@ -41,7 +41,7 @@ class MatchEntryPresentation extends Component {
                   <div>{heroType}:</div>
                   
                   {this.props.sortedHeroes[heroType].map((item,i) => 
-                    <PickerElement type='checkbox' key={item.name} imgUrl={getImageForHero(item)} name={item.name} onChange={this.props.heroSelectChange} checked={this.props.selectedHeroes[item.name]  ? true : false}/>
+                    <PickerElement type='checkbox' key={item.name} imgUrl={getImageForHero(item.name)} name={item.name} onChange={this.props.heroSelectChange} checked={this.props.selectedHeroes[item.name]  ? true : false}/>
                   )}
                   
                 </div>
@@ -59,7 +59,7 @@ class MatchEntryPresentation extends Component {
                   <div>{mapType}:</div>
                   
                   {this.props.sortedMaps[mapType].map((item,i) => 
-                    <PickerElement type='radio' imgUrl={getImageForMap(item)} key={item.name} name={item.name} onChange={this.props.mapSelectChange} checked={this.props.selectedMap === item.name  ? true : false}/>
+                    <PickerElement type='radio' imgUrl={getImageForMap(item.name)} key={item.name} name={item.name} onChange={this.props.mapSelectChange} checked={this.props.selectedMap === item.name  ? true : false}/>
                   )}
                   
                 </div>
