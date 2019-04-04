@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import {css} from 'styled-components';
 import {InputNumber, Switch} from 'antd';
 
-import {getImageForHero, getImageForMap} from '../util'
+import {getImageForHero, getImageForMap, capitalize} from '../util'
 
 class MatchEntryPresentation extends Component {
 
@@ -33,30 +33,30 @@ class MatchEntryPresentation extends Component {
             <ResultRadio currentResult={this.props.result} onChange={this.props.resultSelectChange} />
           </div>
 
-          <div style={{'maxWidth': '900px', margin: '10px'}}>
+          <RootHeroContainer>
           {this.props.sortedHeroes ? 
             Object.keys(this.props.sortedHeroes).map((heroType, i) => {
               return (
-                <div key={heroType}>
-                  <div>{heroType}:</div>
-                  
+                <HeroListContainer key={heroType}>
+
+                  <CategoryTitle> {capitalize(heroType)} </CategoryTitle>
                   {this.props.sortedHeroes[heroType].map((item,i) => 
                     <PickerElement type='checkbox' key={item.name} imgUrl={getImageForHero(item.name)} name={item.name} onChange={this.props.heroSelectChange} checked={this.props.selectedHeroes[item.name]  ? true : false}/>
                   )}
                   
-                </div>
+                </HeroListContainer>
               )
             })
-            : <span> Loading Maps </span>
+            : <span> Loading Heroes </span>
           }
-          </div>
+          </RootHeroContainer>
 
           <div>
           {this.props.sortedMaps ? 
             Object.keys(this.props.sortedMaps).map((mapType, i) => {
               return (
                 <div key={mapType}>
-                  <div>{mapType}:</div>
+                  <CategoryTitle> {capitalize(mapType)} </CategoryTitle>
                   
                   {this.props.sortedMaps[mapType].map((item,i) => 
                     <PickerElement type='radio' imgUrl={getImageForMap(item.name)} key={item.name} name={item.name} onChange={this.props.mapSelectChange} checked={this.props.selectedMap === item.name  ? true : false}/>
@@ -110,6 +110,11 @@ const ResultRadioElement = ({name, onChange, checked}) => {
     );
 };
 
+const CategoryTitle = styled.h3 `
+  flex-basis: 100%;
+  text-align: center;
+`
+
 const ResultLabel = styled.label `
     height: 30px;
     width: 80px;
@@ -121,6 +126,18 @@ const ResultLabel = styled.label `
 
 
 const FlexContainer = styled.div `
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+`
+
+const RootHeroContainer = styled.div `
+  margin: 10px;
+  max-width: 900px;
+`
+
+const HeroListContainer = styled.div `
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
